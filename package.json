@@ -1,0 +1,41 @@
+{
+  "name": "n8n-nodes-shovels",
+  "version": "1.0.0",
+  "description": "n8n community node for the Shovels REST API — building permits and contractors across 1,800+ U.S. jurisdictions.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jakemorganlabs/shovels_n8n_nodes.git"
+  },
+  "keywords": [
+    "n8n-community-node-package",
+    "n8n",
+    "shovels",
+    "permits",
+    "contractors"
+  ],
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "lint": "eslint . --ext .ts"
+  },
+  "files": [
+    "dist"
+  ],
+  "dependencies": {},
+  "n8n": {
+    "n8nNodesApiVersion": 1,
+    "credentials": [
+      "dist/credentials/ShovelsApi.credentials.js"
+    ],
+    "nodes": [
+      "dist/nodes/Shovels/Shovels.node.js"
+    ]
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.21",
+    "n8n-workflow": "^1.96.0",
+    "typescript": "^5.8.3"
+  }
+}
