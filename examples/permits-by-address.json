@@ -1,0 +1,61 @@
+{
+  "name": "Shovels Example — Permits by Address",
+  "nodes": [
+    {
+      "parameters": {
+        "resource": "address",
+        "operation": "resolve",
+        "address": "123 Main St, Austin, TX 78701"
+      },
+      "id": "a1b2c3d4-1111-2222-3333-444444444444",
+      "name": "Address Resolve",
+      "type": "Shovels",
+      "typeVersion": 1,
+      "position": [380, 260],
+      "credentials": {
+        "shovelsApi": {
+          "id": "cred-mock-001",
+          "name": "Shovels API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "permit",
+        "operation": "search",
+        "geoId": "={{ $json.geo_id }}",
+        "fromDate": "2024-01-01",
+        "toDate": "2024-01-31",
+        "returnAll": false,
+        "limit": 10
+      },
+      "id": "a1b2c3d4-1111-2222-3333-555555555555",
+      "name": "Permit Search",
+      "type": "Shovels",
+      "typeVersion": 1,
+      "position": [640, 260],
+      "credentials": {
+        "shovelsApi": {
+          "id": "cred-mock-001",
+          "name": "Shovels API"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Address Resolve": {
+      "main": [
+        [
+          {
+            "node": "Permit Search",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {},
+  "tags": [],
+  "active": false
+}

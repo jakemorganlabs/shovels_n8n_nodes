@@ -5,7 +5,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/jakemorganlabs/shovels_n8n_nodes.git"
+    "url": "git+https://github.com/jakemorganlabs/shovels_n8n_nodes.git"
   },
   "keywords": [
     "n8n-community-node-package",
@@ -16,7 +16,7 @@
   ],
   "main": "index.js",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && cp nodes/Shovels/*.svg dist/nodes/Shovels/",
     "watch": "tsc --watch",
     "lint": "eslint . --ext .ts"
   },
@@ -24,6 +24,9 @@
     "dist"
   ],
   "dependencies": {},
+  "peerDependencies": {
+    "n8n-workflow": "*"
+  },
   "n8n": {
     "n8nNodesApiVersion": 1,
     "credentials": [
