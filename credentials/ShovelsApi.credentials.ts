@@ -1,3 +1,9 @@
+/**
+ * ShovelsApi credential type.
+ * Invariant: stores exactly one secret (API key) and injects it as a header.
+ * Does NOT validate the key's permissions — that is n8n's test-request responsibility.
+ * Does NOT read process.env or fs; the key comes from n8n's encrypted credential store.
+ */
 import type {
 	ICredentialTestRequest,
 	ICredentialType,

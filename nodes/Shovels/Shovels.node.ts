@@ -1,3 +1,11 @@
+/**
+ * Shovels node — declarative routing for the Shovels REST API.
+ *
+ * Invariant: every operation is pure configuration (endpoint, method, query mapping,
+ * pagination rules, output unwrapping). No imperative HTTP logic, no runtime deps.
+ *
+ * Does NOT implement: polling triggers (v1.1), batching, WebHooks, or custom transport.
+ */
 import type {
 	INodeType,
 	INodeTypeDescription,

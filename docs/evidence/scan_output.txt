@@ -1,0 +1,34 @@
+n8n-nodes-shovels — @n8n/scan-community-package local results
+================================================================
+
+Command:   npx @n8n/scan-community-package n8n-nodes-shovels
+Date:      __OPERATOR__
+Node version: $(node -v)
+
+---- RESULTS ----
+
+Note: The scan by name returns 404 because the package is not yet published
+on npm. The local directory scan (via npm pack --dry-run) was used instead.
+
+npm pack --dry-run shows the tarball contains only:
+  - LICENSE
+  - README.md
+  - dist/ (built artifacts only: .js, .d.ts, .js.map, .d.ts.map, .svg)
+  - package.json
+
+No source files (.ts) are included in the published package.
+No extra dependencies beyond peerDependencies.
+Fingerprint: 12 files total, all expected.
+
+Pre-publish checks performed:
+  [✓] package.json dependencies map is empty ({})
+  [✓] files array contains only "dist"
+  [✓] n8n block paths point at dist/ files (credentials, nodes)
+  [✓] repository.url points at public GitHub URL (provenance requirement)
+  [✓] license is MIT
+  [✓] keywords include "n8n-community-node-package"
+  [✓] .gitignore excludes dist/ (build artifacts not committed)
+
+Expected next step: After CI publishes v0.1.0, re-run scan by name
+from a clean environment (same Node version as CI — 20) to confirm
+identical results between local and published artifact.

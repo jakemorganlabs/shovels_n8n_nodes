@@ -1,0 +1,1190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shovels for n8n — Verified Community Node — SRS &amp; TDD</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=JetBrains+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%2280%22 font-size=%2290%22>●</text></svg>">
+<style>
+  :root {
+    --ink: #0a0a0a;
+    --paper: #fafaf7;
+    --paper-2: #f0efea;
+    --paper-3: #e8e7e1;
+    --rule: #1a1a1a;
+    --rule-soft: rgba(10,10,10,0.12);
+    --rule-softer: rgba(10,10,10,0.07);
+    --dim: #555;
+    --dimmer: #888;
+    --done: #999;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'JetBrains Mono', monospace;
+    background: var(--paper);
+    color: var(--ink);
+    line-height: 1.7;
+    min-height: 100vh;
+    padding: 56px 40px 140px;
+    background-image: radial-gradient(circle at 1px 1px, rgba(10,10,10,0.04) 1px, transparent 0);
+    background-size: 24px 24px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .container { max-width: 860px; margin: 0 auto; }
+
+  /* ---------- LINKS ---------- */
+  a { color: var(--ink); text-decoration: none; border-bottom: 1px solid var(--rule-soft); }
+  a:hover { border-bottom-color: var(--ink); }
+
+  /* ---------- MASTHEAD ---------- */
+  .masthead {
+    border-top: 2px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    padding: 24px 0 30px;
+    margin-bottom: 36px;
+  }
+  .masthead-meta {
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px;
+    font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+    margin-bottom: 26px; color: var(--dim);
+  }
+  .doctype {
+    font-size: 10px; letter-spacing: 0.28em; text-transform: uppercase;
+    color: var(--dim); margin-bottom: 18px;
+  }
+  .doctype span { color: var(--ink); }
+  h1.title {
+    font-family: 'Cormorant Garamond', serif; font-weight: 500;
+    font-size: clamp(40px, 6.5vw, 68px); line-height: 0.96;
+    letter-spacing: -0.02em; margin-bottom: 16px;
+  }
+  .subtitle {
+    font-family: 'Cormorant Garamond', serif; font-style: italic;
+    font-size: 21px; color: var(--dim); margin-bottom: 26px; max-width: 60ch;
+  }
+  .id-grid {
+    display: grid; grid-template-columns: repeat(4, auto); gap: 28px;
+    font-size: 11px; letter-spacing: 0.05em; color: var(--dim);
+  }
+  .id-grid .k { font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--dimmer); display: block; margin-bottom: 3px; }
+  .id-grid .v { color: var(--ink); }
+
+  /* ---------- ABSTRACT ---------- */
+  .abstract {
+    font-family: 'Cormorant Garamond', serif; font-size: 18px;
+    line-height: 1.55; color: var(--dim); margin-bottom: 30px;
+    border-left: 2px solid var(--ink); padding: 4px 0 4px 24px;
+  }
+  .abstract strong { color: var(--ink); font-weight: 600; }
+
+  /* ---------- FLOATING-LABEL BOX ---------- */
+  .box {
+    border: 1px solid var(--rule); padding: 28px 30px 24px;
+    margin: 34px 0; position: relative; background: var(--paper-2);
+  }
+  .box::before {
+    content: attr(data-label); position: absolute; top: -8px; left: 22px;
+    background: var(--paper); padding: 0 12px;
+    font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink);
+  }
+  .box.plain { background: transparent; }
+
+  /* ---------- INVERTED THESIS BLOCK ---------- */
+  .thesis {
+    background: var(--ink); color: var(--paper); padding: 34px 34px 30px;
+    margin: 40px 0; position: relative;
+  }
+  .thesis::before {
+    content: attr(data-label); position: absolute; top: -8px; left: 24px;
+    background: var(--paper); color: var(--ink); padding: 0 12px;
+    font-size: 10px; letter-spacing: 0.2em; border: 1px solid var(--ink);
+  }
+  .thesis h3 { color: var(--paper); border: none; margin: 0 0 12px; }
+  .thesis p { color: rgba(250,250,247,0.82); font-size: 13px; }
+  .thesis p + p { margin-top: 12px; }
+  .thesis strong { color: var(--paper); }
+
+  /* ---------- PART DIVIDER ---------- */
+  .part {
+    display: flex; align-items: baseline; gap: 24px;
+    margin: 78px 0 10px; padding-bottom: 16px; border-bottom: 1px solid var(--rule);
+  }
+  .part:first-of-type { margin-top: 56px; }
+  .part-num {
+    font-family: 'Cormorant Garamond', serif; font-style: italic;
+    font-size: 54px; line-height: 1; font-weight: 500;
+  }
+  .part-title {
+    font-family: 'Cormorant Garamond', serif; font-size: 27px; font-weight: 500;
+    letter-spacing: -0.01em; flex: 1;
+  }
+  .part-meta { font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--dim); white-space: nowrap; }
+  .part-desc {
+    font-family: 'Cormorant Garamond', serif; font-style: italic;
+    font-size: 17px; color: var(--dim); margin: 16px 0 40px; padding-left: 2px;
+  }
+
+  /* ---------- HEADINGS ---------- */
+  h2 {
+    font-family: 'Cormorant Garamond', serif; font-weight: 500; font-size: 25px;
+    letter-spacing: -0.01em; margin: 52px 0 8px; padding-bottom: 10px;
+    border-bottom: 1px solid var(--rule); display: flex; align-items: baseline; gap: 14px;
+  }
+  h2 .sec { font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 500; color: var(--dim); letter-spacing: 0.05em; }
+  h3 {
+    font-family: 'Cormorant Garamond', serif; font-weight: 600; font-size: 19px;
+    margin: 32px 0 6px; display: flex; align-items: baseline; gap: 12px;
+  }
+  h3 .sec { font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 500; color: var(--dimmer); letter-spacing: 0.05em; }
+  h4 {
+    font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--dim); margin: 24px 0 8px; font-weight: 600;
+  }
+
+  /* ---------- PROSE ---------- */
+  p { font-size: 13px; margin: 12px 0; }
+  p.lead { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 16px; color: var(--dim); }
+  strong { font-weight: 600; }
+  em { font-style: italic; }
+  .muted { color: var(--dim); }
+
+  ul, ol { margin: 12px 0 12px; padding-left: 0; list-style: none; }
+  li { font-size: 13px; margin-bottom: 9px; padding-left: 20px; position: relative; line-height: 1.55; }
+  ul > li::before { content: "—"; position: absolute; left: 0; color: var(--dimmer); }
+  ol { counter-reset: ol; }
+  ol > li { counter-increment: ol; }
+  ol > li::before { content: counter(ol) "."; position: absolute; left: 0; color: var(--dimmer); font-size: 11px; }
+  li strong { font-weight: 600; }
+
+  /* ---------- INLINE CODE ---------- */
+  code {
+    font-family: 'JetBrains Mono', monospace; font-size: 12px;
+    background: var(--paper-2); padding: 1px 5px; border: 1px solid var(--rule-soft); white-space: nowrap;
+  }
+
+  /* ---------- CODE / DIAGRAM BLOCKS ---------- */
+  pre {
+    font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 1.55;
+    background: var(--paper-2); border: 1px solid var(--rule-soft);
+    padding: 18px 20px; margin: 18px 0; overflow-x: auto; white-space: pre;
+    position: relative;
+  }
+  pre.code { background: #0e0e0d; color: #e8e7e1; border-color: #0e0e0d; }
+  pre.code .cm { color: #8a8a86; }
+  pre .lbl {
+    display: block; font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--dimmer); margin-bottom: 12px;
+  }
+  pre.code .lbl { color: #7a7a76; }
+
+  /* ---------- TABLES ---------- */
+  table { width: 100%; border-collapse: collapse; font-size: 12px; margin: 18px 0; }
+  caption { caption-side: top; text-align: left; font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--dimmer); margin-bottom: 10px; }
+  th { text-align: left; font-size: 9px; letter-spacing: 0.13em; text-transform: uppercase; color: var(--dim); font-weight: 500; border-bottom: 1px solid var(--rule); padding: 9px 10px; vertical-align: bottom; }
+  td { border-bottom: 1px solid var(--rule-softer); padding: 10px 10px; vertical-align: top; line-height: 1.5; }
+  tr:hover td { background: rgba(10,10,10,0.015); }
+  td.id, th.id { white-space: nowrap; font-weight: 600; width: 1%; }
+  td.lvl { white-space: nowrap; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; }
+  .lvl-must { font-weight: 600; color: var(--ink); }
+  .lvl-should { color: var(--dim); }
+  .lvl-may { color: var(--dimmer); }
+  .tier { font-weight: 600; white-space: nowrap; }
+
+  /* ---------- TOC ---------- */
+  .toc { columns: 2; column-gap: 48px; margin: 8px 0 12px; }
+  .toc ol, .toc ul { list-style: none; margin: 0; padding: 0; }
+  .toc li { break-inside: avoid; font-size: 12px; margin-bottom: 7px; padding-left: 0; }
+  .toc li::before { content: none; }
+  .toc .num { color: var(--dimmer); margin-right: 8px; font-size: 11px; }
+  .toc a { border: none; }
+  .toc a:hover { border-bottom: 1px solid var(--ink); }
+  .toc .grp { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 15px; color: var(--ink); margin: 14px 0 8px; break-after: avoid; }
+  .toc .grp:first-child { margin-top: 0; }
+  @media (max-width: 720px){ .toc { columns: 1; } }
+
+  /* ---------- KEY-VALUE GRID ---------- */
+  .kv { display: grid; grid-template-columns: 180px 1fr; gap: 0; margin: 14px 0; font-size: 12px; border-top: 1px solid var(--rule-soft); }
+  .kv dt { padding: 9px 12px 9px 0; color: var(--dim); border-bottom: 1px solid var(--rule-softer); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; }
+  .kv dd { padding: 9px 0; border-bottom: 1px solid var(--rule-softer); }
+  @media (max-width: 600px){ .kv { grid-template-columns: 1fr; } .kv dd { padding-top: 0; padding-bottom: 12px; } }
+
+  /* ---------- FOOTER ---------- */
+  .footer {
+    margin-top: 80px; border-top: 1px solid var(--rule); padding-top: 24px;
+    text-align: center; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--dimmer);
+  }
+  .footer em { display: block; font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 17px; text-transform: none; letter-spacing: 0; color: var(--dim); margin-top: 14px; }
+
+  hr.soft { border: none; border-top: 1px solid var(--rule-soft); margin: 30px 0; }
+
+  /* ---------- PRINT ---------- */
+  @media print {
+    body { background: #fff; padding: 0; font-size: 10.5pt; }
+    pre.code { background: #fff; color: #000; border: 1px solid #999; }
+    pre.code .cm { color: #555; }
+    .thesis { background: #fff; color: #000; border: 2px solid #000; }
+    .thesis h3, .thesis p, .thesis strong { color: #000; }
+    .part { break-before: page; }
+    .part:first-of-type { break-before: avoid; }
+    h2, h3 { break-after: avoid; }
+    pre, table, .box, .thesis { break-inside: avoid; }
+    a { border: none; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- ============================= MASTHEAD ============================= -->
+  <div class="masthead">
+    <div class="masthead-meta">
+      <span>jakemorganlabs · piece III</span>
+      <span>controlled document</span>
+    </div>
+    <div class="doctype"><span>Software Requirements Specification</span> &nbsp;·&nbsp; <span>Technical Design Document</span></div>
+    <h1 class="title">Shovels for n8n</h1>
+    <div class="subtitle">A verified, dependency-free n8n integration for the Shovels building-permit and contractor API — published by CI with a provenance attestation, and reviewed by n8n itself.</div>
+    <div class="id-grid">
+      <div><span class="k">Doc ID</span><span class="v">MICT-NODE-003</span></div>
+      <div><span class="k">Version</span><span class="v">1.0 — Baselined</span></div>
+      <div><span class="k">Author</span><span class="v">Jake Morgan</span></div>
+      <div><span class="k">Status</span><span class="v">Approved for build</span></div>
+    </div>
+  </div>
+
+  <p class="abstract">This document specifies and designs <strong>n8n-nodes-shovels</strong>, a community node that wraps the Shovels REST API — building permits and contractors across 1,800+ U.S. jurisdictions — as a first-class n8n integration. It is built in the <strong>declarative</strong> style (the node is a routing table n8n's HTTP layer executes, not an imperative script), carries a credential type for the <code>X-API-Key</code>, and exposes a small, well-described set of operations over the Permit, Contractor, and Address resources, with <strong>pagination</strong> and <strong>geo_id resolution</strong> handled by configuration. The node's defining properties are the ones the n8n <strong>Verified Community Nodes Program</strong> demands and rewards: <strong>zero runtime dependencies</strong>, no filesystem or environment access, an English-only interface, exactly one third-party service, and — required for verification since 1&nbsp;May&nbsp;2026 — a release that is <strong>published from CI with a cryptographic provenance attestation</strong>, never from a laptop. The whole package is held to a structural bar: <code>npx @n8n/scan-community-package</code> must pass, locally and in CI, before any publish. The document is in two parts: <strong>Part&nbsp;I</strong> states <em>what</em> the node must do and be (SRS); <strong>Part&nbsp;II</strong> states <em>how</em> it is built, released, and verified (TDD).</p>
+
+  <div class="box" data-label="Document Control">
+    <table style="margin-top:4px">
+      <caption>Revision history</caption>
+      <thead><tr><th class="id">Rev</th><th>Date</th><th>Author</th><th>Summary of change</th></tr></thead>
+      <tbody>
+        <tr><td class="id">0.1</td><td>2026-06-06</td><td>J. Morgan</td><td>Initial draft — node target locked (Shovels API), declarative scaffold via the <code>n8n-node</code> CLI, credential + resource/operation surface sketched (S13).</td></tr>
+        <tr><td class="id">0.6</td><td>2026-06-07</td><td>J. Morgan</td><td>Added pagination + geo_id-resolution design, the request/routing configuration, the failure matrix, and the supply-chain / provenance requirements (S14).</td></tr>
+        <tr><td class="id">1.0</td><td>2026-06-08</td><td>J. Morgan</td><td>Baselined. Publish pipeline (GitHub Actions + OIDC provenance), the scan/verification gate, distribution topology, optional polling trigger, and traceability matrix complete.</td></tr>
+      </tbody>
+    </table>
+    <div class="kv" style="margin-top:22px">
+      <dt>Package</dt><dd><code>n8n-nodes-shovels</code> — MIT-licensed, published to the public npm registry; one third-party service (Shovels) per package, as the program requires.</dd>
+      <dt>Classification</dt><dd>Public — open-source portfolio piece. No API keys, datasets, or client data are bundled; the shipped artifact is source, configuration, documentation, and an icon only.</dd>
+      <dt>Supersedes</dt><dd>None.</dd>
+      <dt>Related</dt><dd>This is <strong>Piece III</strong> of the portfolio. It is the program's <em>supply-chain / release-provenance</em> exemplar: the verified node and its CI publish pipeline are the discipline the capstone (FieldOps Intelligence, MICT-FIELD-005) later inherits for its own release, and the verified node is available to that platform as an optional permit/jurisdiction enrichment tool — not on its critical path. Sibling pieces: Intake-to-Outbound Pipeline (MICT-PIPE-001), Document Intelligence / RAG (MICT-RAG-002), Multi-Agent Research System (Piece IV).</dd>
+      <dt>Req. keywords</dt><dd><strong>MUST / SHOULD / MAY</strong> are used per RFC&nbsp;2119 to denote requirement strength.</dd>
+    </div>
+  </div>
+
+  <!-- ============================= THESIS ============================= -->
+  <div class="thesis" data-label="The Engineering Idea">
+    <h3>The integration is configuration; the release is a proof.</h3>
+    <p>Most "I built an integration" portfolio entries are a script that calls an API and an npm package pushed from a laptop. Two things are wrong with that as a credential. First, the trust surface is the author's whole machine and an opaque dependency tree — you take it on faith that the published bytes match the source. Second, nobody reviewed it. This node refuses that shape on both counts. It is written <strong>declaratively</strong>: the node is a routing table — resources, operations, parameters, and the requests they map to — that n8n's own HTTP layer executes. There is no <code>execute()</code> body to audit and no arbitrary code path; the integration's blast radius is its configuration. It ships with <strong>zero runtime dependencies</strong> and touches no files or environment variables, so there is no transitive supply chain to compromise and no ambient authority to abuse — the verification program <em>requires</em> this, and it is also the strongest posture available.</p>
+    <p>The release is where the real contribution lives. Every published version is built by a <strong>GitHub Actions workflow from a specific commit</strong> and carries a <strong>provenance attestation</strong> signed through GitHub's OIDC infrastructure — anyone can cryptographically verify which workflow, repository, and commit produced the artifact on npm. n8n then <strong>manually vets</strong> the package and marks it <em>verified</em>, after which it installs in one click on n8n Cloud and self-hosted alike, with a shield next to its name. That is the line that matters: "I published a package" becomes <strong>"a named workflow built this from this commit, and n8n reviewed it."</strong> The trust is a property of the pipeline and the review, not of trusting me.</p>
+  </div>
+
+  <!-- ============================= TOC ============================= -->
+  <h2><span class="sec">§0</span> Contents</h2>
+  <div class="toc">
+    <div class="grp">Part I — Requirements</div>
+    <ul>
+      <li><span class="num">1</span><a href="#s1">Introduction</a></li>
+      <li><span class="num">2</span><a href="#s2">Overall Description</a></li>
+      <li><span class="num">3</span><a href="#s3">Functional Requirements</a></li>
+      <li><span class="num">4</span><a href="#s4">Non-Functional Requirements</a></li>
+      <li><span class="num">5</span><a href="#s5">External Interface Requirements</a></li>
+      <li><span class="num">6</span><a href="#s6">Data Requirements</a></li>
+      <li><span class="num">7</span><a href="#s7">Acceptance Criteria</a></li>
+    </ul>
+    <div class="grp">Part II — Design</div>
+    <ul>
+      <li><span class="num">8</span><a href="#s8">Architecture Overview</a></li>
+      <li><span class="num">9</span><a href="#s9">The Provenance Principle</a></li>
+      <li><span class="num">10</span><a href="#s10">Component Design</a></li>
+      <li><span class="num">11</span><a href="#s11">Node Model &amp; Schemas</a></li>
+      <li><span class="num">12</span><a href="#s12">Processing Sequences</a></li>
+      <li><span class="num">13</span><a href="#s13">The Verified-Node Discipline</a></li>
+      <li><span class="num">14</span><a href="#s14">Failure Modes &amp; Error Handling</a></li>
+      <li><span class="num">15</span><a href="#s15">Request &amp; Routing Configuration</a></li>
+      <li><span class="num">16</span><a href="#s16">Security &amp; Supply-Chain Design</a></li>
+      <li><span class="num">17</span><a href="#s17">Release Observability &amp; Footprint</a></li>
+      <li><span class="num">18</span><a href="#s18">Evaluation &amp; Test Strategy</a></li>
+      <li><span class="num">19</span><a href="#s19">CI/CD &amp; the Publish Pipeline</a></li>
+      <li><span class="num">20</span><a href="#s20">Distribution Topology</a></li>
+      <li><span class="num">21</span><a href="#s21">Extensibility &amp; Future Work</a></li>
+    </ul>
+    <div class="grp">Appendices</div>
+    <ul>
+      <li><span class="num">A</span><a href="#sa">Requirement Traceability Matrix</a></li>
+      <li><span class="num">B</span><a href="#sb">Worked Example (query + ship)</a></li>
+      <li><span class="num">C</span><a href="#sc">Glossary</a></li>
+    </ul>
+  </div>
+
+  <!-- ====================================================================== -->
+  <!-- PART I                                                                  -->
+  <!-- ====================================================================== -->
+  <div class="part" id="part1">
+    <div class="part-num">I</div>
+    <div class="part-title">Software Requirements Specification</div>
+    <div class="part-meta">What the node must do — and be</div>
+  </div>
+  <div class="part-desc">Defines scope, actors, and the complete set of functional and non-functional requirements the build in Part II is obligated to satisfy — including the program constraints (zero dependencies, provenance publishing, verification) that distinguish a verified node from a published one.</div>
+
+  <!-- ---------- 1 INTRODUCTION ---------- -->
+  <h2 id="s1"><span class="sec">§1</span> Introduction</h2>
+
+  <h3><span class="sec">1.1</span> Purpose</h3>
+  <p>This specification defines the requirements for <code>n8n-nodes-shovels</code>, an n8n community node that makes the Shovels API — building permits, contractors, and the geographies that index them — usable inside an n8n workflow without writing an HTTP-Request node by hand each time. It is the authoritative reference for what the node must do, what it must <em>not</em> do, and the standard it must meet to be accepted into the n8n Verified Community Nodes Program. The motivating context is the author's own: Morgan ICT operates in the low-voltage construction trade, where permit and contractor signals are direct go-to-market intelligence, and an automation engineer who can ship a <em>verified</em> integration for that exact domain demonstrates both the language (TypeScript, n8n internals) and the discipline (supply-chain provenance, external review) that the role rewards. The deliverable is not a demo; it is a reviewed, installable integration carrying a shield in the n8n nodes panel.</p>
+
+  <h3><span class="sec">1.2</span> Scope</h3>
+  <h4>In scope</h4>
+  <ul>
+    <li>A declarative-style node scaffolded with the <code>n8n-node</code> CLI — the structure and tooling the verification program expects — exposing a <strong>Resource / Operation</strong> parameter pair.</li>
+    <li>A credential type for Shovels <code>X-API-Key</code> header authentication, with a credential test request so users get immediate green/red feedback.</li>
+    <li>Three to four operations across <strong>Permits</strong> and <strong>Contractors</strong> — search permits by geography, get a permit by id, search contractors, get a contractor by id — plus an <strong>Address</strong> resolution operation that turns an address into a <code>geo_id</code>.</li>
+    <li><strong>Pagination</strong> over the API's <code>page</code> / <code>next_page</code> scheme, and <strong>geo_id resolution</strong> (including the shortcut that a state or ZIP is already a geo_id), handled in routing/config.</li>
+    <li>Clean operation and parameter descriptions, sensible field grouping (required fields surfaced; optional filters under <em>Additional Fields</em>), and typed, user-legible error surfacing.</li>
+    <li>A thorough README with screenshots, example workflows, and authentication setup; an MIT license; the <code>n8n-community-node-package</code> keyword for discovery.</li>
+    <li>A <strong>GitHub Actions publish pipeline</strong> that builds, scans, and publishes to npm with a <strong>provenance statement</strong>, and submission through the n8n <strong>Creator Portal</strong> for verification.</li>
+    <li><em>Optional:</em> a <strong>polling trigger</strong> ("new permits in area X since last run") for the same service, allowed alongside the main node.</li>
+  </ul>
+  <h4>Out of scope</h4>
+  <ul>
+    <li>The full Shovels surface. Addresses-as-data, Markets/metrics, Lists, and the Decisions API beta are deliberately deferred (§21) to keep v1.0 small, well-described, and easy to review — one tight resource set beats a sprawling one.</li>
+    <li>Any runtime dependency. Verified nodes forbid them; the package's <code>dependencies</code> map is empty by requirement, not by accident (§3.7, §16).</li>
+    <li>Filesystem or environment-variable access of any kind; all input arrives through node parameters and the n8n credential store (verification constraint).</li>
+    <li>Logic / flow-control behavior, or anything that competes with an n8n paid/enterprise feature — categories the program does not accept.</li>
+    <li>Caching, rate-limit budgeting, or analytics layered on top of the API; the node is a faithful, thin client, not a platform over Shovels.</li>
+  </ul>
+
+  <h3><span class="sec">1.3</span> Intended Audience</h3>
+  <p>Hiring reviewers and engineers evaluating the work; the implementer (the author) during the build; n8n's verification reviewers; and any future maintainer adding resources or operations. No prior familiarity with n8n node internals or the Shovels API is assumed — the node interface is specified in §5 and §11, and the release mechanics in §19.</p>
+
+  <h3><span class="sec">1.4</span> Definitions, Acronyms &amp; Abbreviations</h3>
+  <p>A full glossary appears in Appendix C. The terms that recur most: <strong>declarative node</strong> (a node defined as configuration/routing that n8n executes, vs a programmatic <code>execute()</code>), <strong>resource / operation</strong> (the two-level parameter pattern n8n uses to organize a node's actions), <strong>geo_id</strong> (Shovels' unified geographic identifier), <strong>credential type</strong> (the n8n object that holds and injects the API key), <strong>provenance</strong> (a signed attestation of which workflow/commit built an npm package), and <strong>verified node</strong> (a community node n8n has reviewed and marked installable from the canvas with a shield).</p>
+
+  <h3><span class="sec">1.5</span> References &amp; Standards</h3>
+  <ul>
+    <li>RFC&nbsp;2119 — keyword strength (MUST / SHOULD / MAY).</li>
+    <li>The n8n community-node <em>verification guidelines</em> and <em>code standards</em> — the acceptance bar this node targets (§3.7, §13).</li>
+    <li>The Shovels REST API (v2) reference — Permits, Contractors, Addresses, geographies, the <code>X-API-Key</code> header, and the <code>page</code>/<code>next_page</code> pagination model (§5.1).</li>
+    <li>npm package provenance (build provenance via GitHub Actions OIDC / Sigstore) — the attestation mechanism required for verification since 1&nbsp;May&nbsp;2026 (§19).</li>
+    <li>SemVer 2.0.0 — version numbering for the published package.</li>
+  </ul>
+
+  <h3><span class="sec">1.6</span> Document Conventions</h3>
+  <p>Requirements carry stable identifiers of the form <code>FR-XX-n</code> (functional, grouped by concern) and <code>NFR-XX-n</code> (non-functional). Each states a single testable obligation and a strength keyword. Appendix A traces every identifier to the design section that satisfies it.</p>
+
+  <!-- ---------- 2 OVERALL DESCRIPTION ---------- -->
+  <h2 id="s2"><span class="sec">§2</span> Overall Description</h2>
+
+  <h3><span class="sec">2.1</span> Product Perspective</h3>
+  <p>The node has two faces that this document keeps deliberately separate. The <strong>runtime artifact</strong> is what a user installs and drops on a canvas: a credential and a set of operations that, on execution, issue authenticated HTTP requests to Shovels and return items. It is small, deterministic, and dependency-free. The <strong>release artifact</strong> is the npm package and its provenance: the bytes, their signature, and the n8n verification status that together let a stranger trust the install. Most of the engineering interest — and the program's bar — lives in the second face. The node is not a service the author operates; it is a published, reviewed component that runs inside other people's n8n instances, which is precisely why supply-chain integrity is the headline rather than uptime.</p>
+
+  <h3><span class="sec">2.2</span> Product Functions</h3>
+  <p>At a glance — <strong>runtime:</strong> authenticate (X-API-Key) → pick resource (Permit / Contractor / Address) → pick operation (search / get / resolve) → set fields (geo_id + date window + filters, or an id) → execute → paginate if requested → emit items. <strong>Release:</strong> scaffold (n8n-node CLI) → implement (declarative routing) → build (tsc) → scan (@n8n/scan-community-package) → test in self-hosted n8n → tag → CI publish to npm with provenance → submit to the Creator Portal → verified → one-click install. Each verb maps to a component in §10 and a requirement group in §3.</p>
+
+  <h3><span class="sec">2.3</span> Actors &amp; User Classes</h3>
+  <table>
+    <thead><tr><th>Actor</th><th>Type</th><th>Interaction</th></tr></thead>
+    <tbody>
+      <tr><td>Workflow author (end user)</td><td>External, human</td><td>Installs the node, configures a Shovels credential, and uses its operations on a canvas. The primary consumer; the UX requirements (§3.5) exist for them.</td></tr>
+      <tr><td>Node author / maintainer</td><td>Internal, human</td><td>Builds, scans, tests, tags, and releases the package; responds to verification feedback; adds resources over time.</td></tr>
+      <tr><td>n8n runtime</td><td>External, system</td><td>Executes the node's routing, injects credentials, runs pagination, renders the UI from the node description. The node is configuration <em>for</em> this engine.</td></tr>
+      <tr><td>Shovels API</td><td>External, system</td><td>Serves permits, contractors, and geographies over HTTPS with X-API-Key auth; may be slow, rate-limited (429), or reject a bad key (401). The single third-party service.</td></tr>
+      <tr><td>npm registry</td><td>External, system</td><td>Hosts the published package and its provenance attestation; the distribution point n8n fetches from for final vetting.</td></tr>
+      <tr><td>GitHub Actions</td><td>External, system</td><td>Builds and publishes the package from a tagged commit and signs the provenance statement via OIDC. The only sanctioned publisher (post May 2026).</td></tr>
+      <tr><td>n8n Creator Portal / reviewers</td><td>External, human + system</td><td>Receive the submission, vet the package for quality and security, and grant (or withhold) verified status.</td></tr>
+    </tbody>
+  </table>
+
+  <h3><span class="sec">2.4</span> Operating Environment</h3>
+  <p>At runtime the node loads inside any n8n instance that supports community nodes — self-hosted on the author's machine for development and testing, and (once verified) n8n Cloud and self-hosted for end users, requiring an n8n version that exposes verified-node install from the canvas. The node calls Shovels over outbound HTTPS only. The build/release environment is a CI runner (Ubuntu, a pinned Node LTS) and the public npm registry; the development loop is a local self-hosted n8n with the package linked in.</p>
+
+  <h3><span class="sec">2.5</span> Design &amp; Implementation Constraints</h3>
+  <ul>
+    <li>The package MUST declare <strong>zero runtime dependencies</strong> (empty <code>dependencies</code>); only <code>devDependencies</code> and a <code>peerDependency</code> on <code>n8n-workflow</code> are permitted. This is the top-level verification constraint (§3.7).</li>
+    <li>The node MUST NOT read or write files, and MUST NOT read environment variables; every input arrives via node parameters or the n8n credential store.</li>
+    <li>The node MUST be built declaratively where the API allows it (routing-based), scaffolded with the <code>n8n-node</code> CLI; an imperative <code>execute()</code> is reserved only for what declarative routing genuinely cannot express (e.g. the optional trigger's <code>poll()</code>).</li>
+    <li>The package MUST integrate <strong>exactly one</strong> third-party service (Shovels); a trigger node for the same service MAY be included alongside the main node, but nothing else.</li>
+    <li>For verification, the package MUST be published from a GitHub Actions workflow with a provenance statement — never from a local machine (§19).</li>
+    <li>The node interface and all documentation MUST be in English only; the package MUST be MIT-licensed and carry the <code>n8n-community-node-package</code> keyword.</li>
+    <li>Secrets (the API key) MUST live only in the n8n credential store and MUST NOT appear in source, logs, or the published artifact.</li>
+  </ul>
+
+  <h3><span class="sec">2.6</span> Assumptions &amp; Dependencies</h3>
+  <ul>
+    <li>The Shovels API remains stable at its v2 surface for the operations wrapped (paths, the <code>X-API-Key</code> header, and the <code>page</code>/<code>next_page</code> response shape). API specifics are confirmed against the live reference at build time, not assumed from memory.</li>
+    <li>n8n's declarative routing supports the request mapping, the credential generic-auth header injection, the credential test request, and the generic pagination this node relies on (§15).</li>
+    <li>The user supplies their own valid Shovels API key; the node neither provisions nor bundles one.</li>
+    <li>npm provenance and the GitHub Actions OIDC signing path are available to the repository (public repo, supported runner) (§19).</li>
+    <li>A state two-letter code (e.g. <code>CA</code>) and a ZIP (e.g. <code>94103</code>) are themselves valid geo_ids and need no lookup; cities, counties, and specific addresses require resolution via the Address endpoint (§3.4).</li>
+  </ul>
+
+  <!-- ---------- 3 FUNCTIONAL REQUIREMENTS ---------- -->
+  <h2 id="s3"><span class="sec">§3</span> Functional Requirements</h2>
+  <p class="muted">Grouped by concern. Strength per RFC&nbsp;2119.</p>
+
+  <h3><span class="sec">3.1</span> Node Structure &amp; Scaffolding</h3>
+  <table>
+    <thead><tr><th class="id">ID</th><th>Requirement</th><th class="lvl">Lvl</th></tr></thead>
+    <tbody>
+      <tr><td class="id">FR-NS-1</td><td>The package MUST be scaffolded with the <code>n8n-node</code> CLI (a declarative template), yielding the structure the verification program expects: a node class, a credential class, a node icon, a <code>package.json</code> with the <code>n8n</code> manifest block, and a ready-to-use publish workflow.</td><td class="lvl"><span class="lvl-must">Must</span></td></tr>
+      <tr><td class="id">FR-NS-2</td><td>The node MUST expose a <strong>Resource</strong> parameter (Permit, Contractor, Address) and, per resource, an <strong>Operation</strong> parameter, following n8n naming conventions (the operation selector is named <code>Operation</code>; the resource selector <code>Resource</code>).</td><td class="lvl"><span class="lvl-must">Must</span></td></tr>
+      <tr><td class="id">FR-NS-3</td><td>The node MUST be implemented declaratively (request <code>routing</code> on operations and fields) wherever the API permits; imperative code is restricted to constructs declarative routing cannot express.</td><td class="lvl"><span class="lvl-must">Must</span></td></tr>
+      <tr><td class="id">FR-NS-4</td><td>The node MUST set <code>requestDefaults</code> (base URL <code>https://api.shovels.ai/v2</code>, <code>Accept: application/json</code>) and a dynamic <code>subtitle</code> reflecting the selected resource/operation, and MUST carry a distinct SVG icon.</td><td class="lvl"><span class="lvl-should">Should</span></td></tr>
+      <tr><td class="id">FR-NS-5</td><td>The node MUST be versioned (description <code>version: 1</code>) so future breaking changes to its parameter surface can coexist with v1 behavior.</td><td class="lvl"><span class="lvl-should">Should</span></td></tr>
+    </tbody>
+  </table>
+
+  <h3><span class="sec">3.2</span> Credentials &amp; Authentication</h3>
+  <table>
+    <thead><tr><th class="id">ID</th><th>Requirement</th><th class="lvl">Lvl</th></tr></thead>
+    <tbody>
+      <tr><td class="id">FR-CR-1</td><td>The package MUST define a credential type (<code>shovelsApi</code>) with a single secret field — the API key — marked as a password so it is masked in the UI and never echoed.</td><td class="lvl"><span class="lvl-must">Must</span></td></tr>
+      <tr><td class="id">FR-CR-2</td><td>The credential MUST authenticate via the <em>generic</em> method, injecting the key as the <code>X-API-Key</code> request header on every operation; the node body MUST NOT handle the key directly.</td><td class="lvl"><span class="lvl-must">Must</span></td></tr>
+      <tr><td class="id">FR-CR-3</td><td>The credential MUST define a <strong>test request</strong> (a cheap, bounded call to a Shovels endpoint) so the credential dialog can show the user a green check or a clear failure when they save it.</td><td class="lvl"><span class="lvl-must">Must</span></td></tr>
+      <tr><td class="id">FR-CR-4</td><td>The node MUST reference the credential as <code>required: true</code>; an operation MUST NOT be executable without a configured credential.</td><td class="lvl"><span class="lvl-must">Must</span></td></tr>
+    </tbody>
+  </table>
+
+  <h3><span class="sec">3.3</span> Resources &amp; Operations</h3>
+  <table>
+    <thead><tr><th class="id">ID</th><th>Requirement</th><th class="lvl">Lvl</th></tr></thead>
+    <tbody>
+      <tr><td class="id">FR-OP-1</td><td><strong>Permit · Search.</strong> The node MUST search permits by geography (<code>GET /permits/search</code>), requiring a <code>geo_id</code> and a date window (<code>permit_from</code>, <code>permit_to</code>), and supporting common filters (e.g. <code>property_type</code>, <code>permit_tags</code>) as optional fields.</td><td class="lvl"><span class="lvl-must">Must</span></td></tr>
+      <tr><td class="id">FR-OP-2</td><td><strong>Permit · Get.</strong> The node MUST retrieve a single permit by its Shovels id (<code>GET /permits/{id}</code>), returning the full permit object.</td><td class="lvl"><span class="lvl-must">Must</span></td></tr>
+      <tr><td class="id">FR-OP-3</td><td><strong>Contractor · Search.</strong> The node MUST search contractors (<code>GET /contractors/search</code>) by geography and date window with the same filtering shape as permit search.</td><td class="lvl"><span class="lvl-must">Must</span></td></tr>
+      <tr><td class="id">FR-OP-4</td><td><strong>Contractor · Get.</strong> The node MUST retrieve a single contractor by id (<code>GET /contractors/{id}</code>), returning the full contractor object (license, performance metrics, etc.).</td><td class="lvl"><span class="lvl-must">Must</span></td></tr>
+      <tr><td class="id">FR-OP-5</td><td><strong>Address · Resolve geo_id.</strong> The node MUST resolve an address to a <code>geo_id</code> (<code>GET /addresses/search</code>), so a downstream search operation can be driven from a street address rather than only a state/ZIP.</td><td class="lvl"><span class="lvl-must">Must</span></td></tr>
+      <tr><td class="id">FR-OP-6</td><td>Each operation MUST map to exactly one HTTP request via declarative <code>routing</code>; the operation's <code>action</code> label MUST read as a human verb-phrase ("Search permits", "Get a contractor") for the canvas.</td><td class="lvl"><span class="lvl-should">Should</span></td></tr>
+    </tbody>
+  </table>
+
+  <h3><span class="sec">3.4</span> Pagination &amp; geo_id Resolution <span style="font-size:11px;color:var(--dim);font-family:'JetBrains Mono',monospace;letter-spacing:0.04em">— the two API behaviors that need care</span></h3>
+  <table>
+    <thead><tr><th class="id">ID</th><th>Requirement</th><th class="lvl">Lvl</th></tr></thead>
+    <tbody>
+      <tr><td class="id">FR-PG-1</td><td>Search operations MUST expose a <strong>Return All</strong> boolean and, when it is off, a <strong>Limit</strong>; when on, the node MUST page through results via the API's <code>page</code>/<code>next_page</code> scheme until exhausted, accumulating items.</td><td class="lvl"><span class="lvl-must">Must</span></td></tr>
+      <tr><td class="id">FR-PG-2</td><td>Pagination MUST be driven by configuration (declarative generic pagination keyed on the response's <code>next_page</code>), not by a hand-written loop, and MUST terminate when <code>next_page</code> is null.</td><td class="lvl"><span class="lvl-must">Must</span></td></tr>
+      <tr><td class="id">FR-PG-3</td><td>Search responses MUST be unwrapped so that each element of the API's <code>items</code> array becomes one n8n output item (the user receives permits/contractors, not a single envelope object).</td><td class="lvl"><span class="lvl-must">Must</span></td></tr>
+      <tr><td class="id">FR-PG-4</td><td>The node MUST treat a two-letter state code and a ZIP as valid geo_ids directly (no lookup), and MUST document that cities, counties, and addresses require the Address · Resolve operation first.</td><td class="lvl"><span class="lvl-should">Should</span></td></tr>
+      <tr><td class="id">FR-PG-5</td><td>The geo_id and date fields on search MUST be presented as required, with descriptions that state the accepted formats (e.g. dates as <code>YYYY-MM-DD</code>), so the most common cause of an empty result (a malformed geo_id or date) is prevented at the form, not discovered at runtime.</td><td class="lvl"><span class="lvl-should">Should</span></td></tr>
+    </tbody>
+  </table>
+
+  <h3><span class="sec">3.5</span> Operation UX, Parameters &amp; Error Surface</h3>
+  <table>
+    <thead><tr><th class="id">ID</th><th>Requirement</th><th class="lvl">Lvl</th></tr></thead>
+    <tbody>
+      <tr><td class="id">FR-UX-1</td><td>Required fields MUST be surfaced directly; optional filters MUST be grouped under an <em>Additional Fields</em> collection so the form is not overwhelming, per n8n UX guidelines.</td><td class="lvl"><span class="lvl-must">Must</span></td></tr>
+      <tr><td class="id">FR-UX-2</td><td>Every parameter and operation MUST carry a clear, English description; field names and option labels MUST follow n8n conventions (title case, no leaked API field names where a friendlier label is clearer).</td><td class="lvl"><span class="lvl-must">Must</span></td></tr>
+      <tr><td class="id">FR-UX-3</td><td>API errors MUST surface to the user as n8n node errors carrying the HTTP status and the Shovels message — not as opaque stack traces; a 401 MUST read as an auth/key problem, a 429 as rate limiting.</td><td class="lvl"><span class="lvl-must">Must</span></td></tr>
+      <tr><td class="id">FR-UX-4</td><td>The node MUST support n8n's <strong>continue-on-fail</strong> behavior so that one failing input item (e.g. one bad id in a batch) does not abort the whole execution when the user opts in.</td><td class="lvl"><span class="lvl-should">Should</span></td></tr>
+      <tr><td class="id">FR-UX-5</td><td>An empty result set (a valid query that simply matched nothing) MUST be returned as zero items, distinguishable from an error; the node MUST NOT throw on "no matches".</td><td class="lvl"><span class="lvl-should">Should</span></td></tr>
+    </tbody>
+  </table>
+
+  <h3><span class="sec">3.6</span> Documentation &amp; Examples</h3>
+  <table>
+    <thead><tr><th class="id">ID</th><th>Requirement</th><th class="lvl">Lvl</th></tr></thead>
+    <tbody>
+      <tr><td class="id">FR-DOC-1</td><td>The package MUST include a README (in the npm package and the public repo) covering installation, credential setup (where to get a Shovels key), each operation, the geo_id concept, and the pagination toggle.</td><td class="lvl"><span class="lvl-must">Must</span></td></tr>
+      <tr><td class="id">FR-DOC-2</td><td>The README MUST include <strong>screenshots</strong> of the node on a canvas and at least one example workflow (e.g. resolve geo_id → search permits → filter) a reviewer or user can replicate.</td><td class="lvl"><span class="lvl-must">Must</span></td></tr>
+      <tr><td class="id">FR-DOC-3</td><td>The README MUST link to the Shovels API documentation and state the supported API version and the operations covered, so scope is unambiguous.</td><td class="lvl"><span class="lvl-should">Should</span></td></tr>
+      <tr><td class="id">FR-DOC-4</td><td>The README SHOULD display the package's npm <strong>provenance</strong> status and the verification (shield) status once granted, making the trust posture visible at a glance.</td><td class="lvl"><span class="lvl-should">Should</span></td></tr>
+    </tbody>
+  </table>
+
+  <h3><span class="sec">3.7</span> Supply-Chain, Release &amp; Provenance <span style="font-size:11px;color:var(--dim);font-family:'JetBrains Mono',monospace;letter-spacing:0.04em">— the headline</span></h3>
+  <table>
+    <thead><tr><th class="id">ID</th><th>Requirement</th><th class="lvl">Lvl</th></tr></thead>
+    <tbody>
+      <tr><td class="id">FR-SC-1</td><td>The published package MUST have <strong>zero runtime dependencies</strong> — an empty <code>dependencies</code> map — with only <code>devDependencies</code> (build/lint/types) and a <code>peerDependency</code> on <code>n8n-workflow</code>.</td><td class="lvl"><span class="lvl-must">Must</span></td></tr>
+      <tr><td class="id">FR-SC-2</td><td>The package MUST be published to the public npm registry via a <strong>GitHub Actions workflow</strong>, with <code>npm publish --provenance --access public</code> and the workflow granted <code>id-token: write</code> so GitHub's OIDC infrastructure can sign the provenance statement.</td><td class="lvl"><span class="lvl-must">Must</span></td></tr>
+      <tr><td class="id">FR-SC-3</td><td>The package MUST NOT be published from a local machine for any version intended for verification; the CI workflow is the sole sanctioned publisher (program rule effective 1&nbsp;May&nbsp;2026).</td><td class="lvl"><span class="lvl-must">Must</span></td></tr>
+      <tr><td class="id">FR-SC-4</td><td>The CI pipeline MUST run <code>npx @n8n/scan-community-package n8n-nodes-shovels</code> and MUST fail the build (no publish) if the scan does not pass.</td><td class="lvl"><span class="lvl-must">Must</span></td></tr>
+      <tr><td class="id">FR-SC-5</td><td>The package MUST be MIT-licensed, carry the <code>n8n-community-node-package</code> keyword, set a correct <code>repository</code> field (required for a meaningful provenance link), and version per SemVer.</td><td class="lvl"><span class="lvl-must">Must</span></td></tr>
+      <tr><td class="id">FR-SC-6</td><td>Releases MUST be cut from a tagged commit, so the provenance attestation points at an identifiable repository state a reviewer (or any user) can inspect.</td><td class="lvl"><span class="lvl-should">Should</span></td></tr>
+    </tbody>
+  </table>
+
+  <h3><span class="sec">3.8</span> Verification Submission</h3>
+  <table>
+    <thead><tr><th class="id">ID</th><th>Requirement</th><th class="lvl">Lvl</th></tr></thead>
+    <tbody>
+      <tr><td class="id">FR-VF-1</td><td>The node MUST satisfy the program's gating rules before submission: a new (non-duplicate) integration, exactly one third-party service, no logic/flow-control behavior, no env/file access, English-only, MIT, and a passing scan.</td><td class="lvl"><span class="lvl-must">Must</span></td></tr>
+      <tr><td class="id">FR-VF-2</td><td>The node MUST be submitted through the n8n <strong>Creator Portal</strong> for the Verified Community Nodes Program, from a published, provenance-carrying npm version n8n can fetch for final vetting.</td><td class="lvl"><span class="lvl-must">Must</span></td></tr>
+      <tr><td class="id">FR-VF-3</td><td>The submission MUST anticipate review feedback as a normal loop: a rejection or change-request is addressed, a new provenance-signed version published, and the node re-submitted — the goal state is the verified shield and one-click install on Cloud + self-hosted.</td><td class="lvl"><span class="lvl-should">Should</span></td></tr>
+    </tbody>
+  </table>
+
+  <h3><span class="sec">3.9</span> Polling Trigger <span style="font-size:11px;color:var(--dim);font-family:'JetBrains Mono',monospace;letter-spacing:0.04em">— optional, GTM-flavored</span></h3>
+  <table>
+    <thead><tr><th class="id">ID</th><th>Requirement</th><th class="lvl">Lvl</th></tr></thead>
+    <tbody>
+      <tr><td class="id">FR-TR-1</td><td>The package MAY include a <strong>polling trigger</strong> ("Shovels Trigger") for the same service that, on each poll, fetches recent permits for a configured geo_id and emits only those not seen on a prior run.</td><td class="lvl"><span class="lvl-may">May</span></td></tr>
+      <tr><td class="id">FR-TR-2</td><td>If included, the trigger MUST persist its watermark (last-seen permit date/id) in n8n <strong>workflow static data</strong> — never in a file or environment variable — so it remains compliant with the no-fs/no-env constraint.</td><td class="lvl"><span class="lvl-may">May</span></td></tr>
+      <tr><td class="id">FR-TR-3</td><td>If included, the trigger MUST deduplicate across polls (by permit id) so a permit is emitted at most once, and MUST be the only additional node in the package (one service, one trigger).</td><td class="lvl"><span class="lvl-may">May</span></td></tr>
+    </tbody>
+  </table>
+
+  <!-- ---------- 4 NON-FUNCTIONAL ---------- -->
+  <h2 id="s4"><span class="sec">§4</span> Non-Functional Requirements</h2>
+  <table>
+    <thead><tr><th class="id">ID</th><th>Requirement</th><th class="lvl">Lvl</th></tr></thead>
+    <tbody>
+      <tr><td class="id">NFR-DP-1</td><td><strong>Dependency surface.</strong> The runtime dependency count MUST be zero; the install footprint is source + an icon, with nothing fetched transitively. This is both a verification requirement and the node's core security property (§16).</td><td class="lvl"><span class="lvl-must">Must</span></td></tr>
+      <tr><td class="id">NFR-CP-1</td><td><strong>Compatibility.</strong> The package MUST set the correct n8n nodes API version in its manifest and load on current n8n (self-hosted and, once verified, Cloud); breaking n8n-internal changes are absorbed behind the node version (FR-NS-5).</td><td class="lvl"><span class="lvl-must">Must</span></td></tr>
+      <tr><td class="id">NFR-SE-1</td><td><strong>Security.</strong> The API key MUST live only in the n8n credential store, be injected as a header by the credential, and never appear in source, logs, the node's output, or the published artifact (§16).</td><td class="lvl"><span class="lvl-must">Must</span></td></tr>
+      <tr><td class="id">NFR-SE-2</td><td><strong>Supply chain.</strong> Published bytes MUST be traceable to a specific workflow, repository, and commit via a provenance attestation; no version intended for verification is published outside CI (§19).</td><td class="lvl"><span class="lvl-must">Must</span></td></tr>
+      <tr><td class="id">NFR-RE-1</td><td><strong>Reliability.</strong> Read operations MUST be side-effect-free and safely repeatable; a transient API failure MUST surface as a typed, retryable error, and a no-match MUST return empty rather than throw (FR-UX-3/5).</td><td class="lvl"><span class="lvl-must">Must</span></td></tr>
+      <tr><td class="id">NFR-PE-1</td><td><strong>Footprint &amp; performance.</strong> The node MUST add negligible overhead beyond the API round-trip; pagination MUST be bounded by the user's Return All / Limit choice so a broad query cannot silently fan out without intent.</td><td class="lvl"><span class="lvl-should">Should</span></td></tr>
+      <tr><td class="id">NFR-MA-1</td><td><strong>Maintainability.</strong> The base URL, the operation routing, and field definitions MUST be expressed declaratively so a new operation is a configuration addition, not new control flow; adding a resource MUST not require touching existing ones.</td><td class="lvl"><span class="lvl-should">Should</span></td></tr>
+      <tr><td class="id">NFR-QA-1</td><td><strong>Quality gate.</strong> <code>@n8n/scan-community-package</code> MUST pass locally and in CI on every release; a scan failure MUST block publishing (NFR-SE-2, §19).</td><td class="lvl"><span class="lvl-must">Must</span></td></tr>
+      <tr><td class="id">NFR-CO-1</td><td><strong>Program compliance.</strong> The package MUST remain within the verification rules at all times: one service, MIT, English-only, no env/file access, no logic/flow-control, no competition with n8n paid features.</td><td class="lvl"><span class="lvl-must">Must</span></td></tr>
+      <tr><td class="id">NFR-OB-1</td><td><strong>Release observability.</strong> Each release SHOULD be inspectable after the fact — the npm provenance panel, the CI run logs, a tagged commit, and a changelog — so "what shipped, built by what, from where" is answerable without trust.</td><td class="lvl"><span class="lvl-should">Should</span></td></tr>
+    </tbody>
+  </table>
+
+  <!-- ---------- 5 INTERFACES ---------- -->
+  <h2 id="s5"><span class="sec">§5</span> External Interface Requirements</h2>
+
+  <h3><span class="sec">5.1</span> Shovels REST API (outbound)</h3>
+  <p>Base URL <code>https://api.shovels.ai/v2</code>; authentication via the <code>X-API-Key</code> header. The wrapped endpoints: <code>GET /permits/search</code> and <code>GET /contractors/search</code> (require <code>geo_id</code> + <code>permit_from</code>/<code>permit_to</code>; accept filters; return <code>{ items:[…], page, size, next_page }</code>); <code>GET /permits/{id}</code> and <code>GET /contractors/{id}</code> (single object by Shovels id); <code>GET /addresses/search</code> (address → <code>geo_id</code>). Pagination is page-based with a <code>next_page</code> cursor in the body; dates are <code>YYYY-MM-DD</code>. Errors are typed by status: <code>401</code> (bad/missing key) terminal, <code>429</code> (rate limit) retryable with backoff.</p>
+
+  <h3><span class="sec">5.2</span> n8n Node Interface (the canvas)</h3>
+  <p>The node renders from its description: a Resource dropdown, an Operation dropdown per resource, required fields, and an <em>Additional Fields</em> collection of optional filters. The credential dialog renders a single masked API-key field with a Test button. Inputs and outputs are the standard <code>main</code> connections; each output item is one permit/contractor/address record (§3.4).</p>
+
+  <h3><span class="sec">5.3</span> npm Registry (release / distribution)</h3>
+  <p>The package is published public to npm under <code>n8n-nodes-shovels</code>, carrying the <code>n8n-community-node-package</code> keyword (for discovery), the <code>n8n</code> manifest block (pointing at the compiled node and credential), an MIT license, a <code>repository</code> field, and a build-provenance attestation visible on the package page. This is the artifact n8n fetches for final vetting.</p>
+
+  <h3><span class="sec">5.4</span> GitHub Actions (publisher / signer)</h3>
+  <p>A release-triggered workflow builds, scans, and publishes the package, requesting an OIDC token (<code>id-token: write</code>) so npm can record a provenance statement binding the artifact to this repository, commit, and workflow. The scaffolded <code>publish.yml</code> is the basis (§19). This is the only sanctioned path to a verifiable release.</p>
+
+  <h3><span class="sec">5.5</span> n8n Creator Portal (verification)</h3>
+  <p>The submission surface for the Verified Community Nodes Program. It accepts a published, provenance-carrying package, runs n8n's manual quality/security review, and — on success — grants the verified shield and canvas-installability across self-hosted and Cloud. Review feedback is handled as an iteration loop (FR-VF-3).</p>
+
+  <!-- ---------- 6 DATA ---------- -->
+  <h2 id="s6"><span class="sec">§6</span> Data Requirements</h2>
+  <ul>
+    <li><strong>Credential (secret).</strong> The Shovels API key — held only in the n8n credential store, encrypted at rest by n8n, injected as a header at request time; never in source, logs, output, or the published package (NFR-SE-1).</li>
+    <li><strong>Transient request/response data.</strong> Permit, contractor, and address records flow through the node from Shovels to the workflow; the node neither persists nor caches them. The user's workflow decides what to store.</li>
+    <li><strong>Trigger watermark (optional).</strong> If the polling trigger is built, its last-seen permit date/id lives in n8n workflow static data — n8n-managed state, not a file (FR-TR-2).</li>
+    <li><strong>Release metadata.</strong> The package version, the tagged commit, the CI run, and the provenance attestation are the durable record of <em>what shipped and how</em> (NFR-OB-1); they live in npm and GitHub, not in the running node.</li>
+    <li><strong>No bundled data.</strong> The published artifact contains source, configuration, an icon, and docs only — no datasets, no keys, no client information (Classification).</li>
+  </ul>
+
+  <!-- ---------- 7 ACCEPTANCE ---------- -->
+  <h2 id="s7"><span class="sec">§7</span> Acceptance Criteria</h2>
+  <p>The build is accepted when each of the following holds, evidenced by the scan (§18), a local self-hosted run, the CI pipeline (§19), and the Creator-Portal outcome:</p>
+  <table>
+    <thead><tr><th class="id">AC</th><th>Condition</th><th>Verifies</th></tr></thead>
+    <tbody>
+      <tr><td class="id">AC-1</td><td>A user can install the node, create a Shovels credential, click Test, and get a green check with a valid key (red with an invalid one).</td><td>FR-CR-1..4</td></tr>
+      <tr><td class="id">AC-2</td><td>Permit · Search with a state geo_id and a date window returns matching permits as individual n8n items; Permit · Get returns the full object for a known id.</td><td>FR-OP-1/2, FR-PG-3</td></tr>
+      <tr><td class="id">AC-3</td><td>Contractor · Search and Contractor · Get behave equivalently for the contractor resource.</td><td>FR-OP-3/4</td></tr>
+      <tr><td class="id">AC-4</td><td>Address · Resolve turns an address into a geo_id that, fed into Permit · Search, returns that area's permits.</td><td>FR-OP-5, FR-PG-4</td></tr>
+      <tr><td class="id">AC-5</td><td>With Return All on, a query spanning multiple pages walks <code>next_page</code> to the end and returns the full set; with it off, Limit caps the count.</td><td>FR-PG-1/2</td></tr>
+      <tr><td class="id">AC-6</td><td>A bad key yields a clear auth error (401), a rate-limit yields a retryable 429 message, and a valid-but-empty query returns zero items without throwing.</td><td>FR-UX-3/5</td></tr>
+      <tr><td class="id">AC-7</td><td>With continue-on-fail enabled, one bad id among many does not abort the execution; good items still flow.</td><td>FR-UX-4</td></tr>
+      <tr><td class="id">AC-8</td><td><code>npx @n8n/scan-community-package n8n-nodes-shovels</code> passes locally and in CI; the published <code>dependencies</code> map is empty.</td><td>FR-SC-1/4, NFR-QA-1</td></tr>
+      <tr><td class="id">AC-9</td><td>The npm package page shows a build-provenance attestation linking the artifact to this repo, commit, and workflow; no verification-bound version was published from a laptop.</td><td>FR-SC-2/3/6, NFR-SE-2</td></tr>
+      <tr><td class="id">AC-10</td><td>The package is MIT-licensed, carries the community-node keyword, integrates only Shovels, and is English-only — i.e. it clears the program's gating rules.</td><td>FR-VF-1, NFR-CO-1</td></tr>
+      <tr><td class="id">AC-11</td><td>The README documents install, credentials, every operation, geo_id, and pagination, with screenshots and a runnable example workflow.</td><td>FR-DOC-1..3</td></tr>
+      <tr><td class="id">AC-12</td><td>The node is submitted through the Creator Portal; the end state is a verified shield and one-click install on Cloud + self-hosted (review iterations expected).</td><td>FR-VF-2/3</td></tr>
+      <tr><td class="id">AC-13</td><td><em>(If built)</em> the polling trigger emits each new permit once, persisting its watermark in workflow static data, with no file/env access.</td><td>FR-TR-1..3</td></tr>
+    </tbody>
+  </table>
+
+  <!-- ====================================================================== -->
+  <!-- PART II                                                                 -->
+  <!-- ====================================================================== -->
+  <div class="part" id="part2">
+    <div class="part-num">II</div>
+    <div class="part-title">Technical Design Document</div>
+    <div class="part-meta">How the node is built, released, and verified</div>
+  </div>
+  <div class="part-desc">The node's anatomy, the credential and routing contracts, the two flows (build and ship), the verified-node discipline, failure handling, and the release machinery — provenance, the scan gate, distribution — that make this a verified integration rather than a published script.</div>
+
+  <!-- ---------- 8 ARCHITECTURE ---------- -->
+  <h2 id="s8"><span class="sec">§8</span> Architecture Overview</h2>
+
+  <h3><span class="sec">8.1</span> System Context</h3>
+  <pre><span class="lbl">Figure 1 — System context</span>
+   Node author / maintainer                         Workflow author (end user)
+        |                                                   |
+        | build · scan · tag · release                      | install · configure · run
+        v                                                   v
+ +--------------------+      provenance-signed      +-----------------------------+
+ |  GitHub Actions    |  ----  npm publish  ---->    |  npm registry               |
+ |  (build + sign)    |        --provenance          |  n8n-nodes-shovels @ x.y.z   |
+ +--------------------+                              +--------------+--------------+
+                                                                    |
+                                              n8n fetches for vetting / install
+                                                                    v
+                                              +-----------------------------+
+                                              |  n8n runtime                |
+                                              |  ( self-hosted + Cloud )    |
+                                              |  loads node + credential    |
+                                              +--------------+--------------+
+                                                             | X-API-Key (outbound HTTPS)
+                                                             v
+                                                   +---------------------+
+                                                   |  Shovels API (v2)   |
+                                                   |  permits·contractors|
+                                                   |  ·addresses/geo_id  |
+                                                   +---------------------+
+              n8n Creator Portal  --(manual review)-->  verified shield + 1-click install</pre>
+
+  <h3><span class="sec">8.2</span> The Two Flows</h3>
+  <p>There are two flows, and the document keeps them apart because they are judged differently. <strong>Build</strong> is a local loop that ends at a node working on a canvas. <strong>Ship</strong> is a CI loop that ends at a verified, installable package — and it is where the program's bar lives.</p>
+  <pre><span class="lbl">Figure 2a — Build flow (local)</span>
+ [1] SCAFFOLD ----> [2] IMPLEMENT --------> [3] BUILD ------> [4] LINK -------> [5] TEST
+   n8n-node CLI       credential +            tsc -> dist       into local        run each op live
+   (declarative)      node routing            (compiled JS)     self-hosted n8n   vs the Shovels API
+                          |                                                          |
+                          +-- no runtime deps, no fs/env (verification constraints) -+</pre>
+  <pre><span class="lbl">Figure 2b — Ship flow (CI / verification)</span>
+ [1] SCAN ----> [2] TAG ----> [3] CI: build -> scan -> publish --provenance (OIDC)
+   @n8n/scan      vX.Y.Z         |                                   |
+   passes?        commit         scan fails? --> BUILD RED, no publish (FR-SC-4)
+       |                                                              | signed
+       v                                                              v
+   (else fix)                                              [4] npm + provenance attestation
+                                                                      |
+                                                                      v
+                                                      [5] SUBMIT (n8n Creator Portal)
+                                                                      |
+                                                  reject / change-request --> fix, re-publish, re-submit
+                                                                      | accept
+                                                                      v
+                                              [6] VERIFIED: shield + 1-click install (Cloud + self-hosted)</pre>
+
+  <h3><span class="sec">8.3</span> Technology &amp; Tooling</h3>
+  <div class="kv">
+    <dt>Language</dt><dd>TypeScript, compiled to JavaScript in <code>dist/</code>; the node and credential are classes implementing n8n's <code>INodeType</code> / <code>ICredentialType</code> interfaces.</dd>
+    <dt>Style</dt><dd>Declarative — operations and fields carry <code>routing</code> the n8n HTTP layer executes; no <code>execute()</code> except the optional trigger's <code>poll()</code>.</dd>
+    <dt>Scaffold &amp; lint</dt><dd>The <code>n8n-node</code> CLI for structure and local checks; <code>@n8n/scan-community-package</code> as the structural gate.</dd>
+    <dt>Dependencies</dt><dd>None at runtime. <code>n8n-workflow</code> as a peer dependency; build/lint/type tooling as dev dependencies only.</dd>
+    <dt>Release</dt><dd>GitHub Actions <code>publish.yml</code> — <code>npm publish --provenance --access public</code> with <code>id-token: write</code> (OIDC signing).</dd>
+    <dt>Distribution</dt><dd>Public npm; verified install from the n8n nodes panel on self-hosted and Cloud.</dd>
+    <dt>Test surface</dt><dd>A local self-hosted n8n with the package linked; the live Shovels API exercised per operation; the scan run before every publish.</dd>
+  </div>
+
+  <!-- ---------- 9 PROVENANCE PRINCIPLE ---------- -->
+  <h2 id="s9"><span class="sec">§9</span> The Provenance Principle</h2>
+  <p class="lead">Declare the contract, depend on nothing, hold no ambient authority, and let the build sign itself and n8n review it.</p>
+  <p>This piece carries the portfolio's recurring move into a different domain. Pieces I and II each took a non-deterministic step (an extraction, a generation) and wrapped it in a deterministic gate, so the trust came from the structure and not the model. A node has no model to distrust — but it has a worse default failure: a published artifact you take on faith. The discipline here is to make the artifact's trustworthiness a <em>verifiable property</em> rather than a request for faith. Four properties carry it:</p>
+  <ul>
+    <li><strong>The node is a contract, not a script.</strong> Built declaratively, the node is a routing table — resources, operations, fields, and the requests they map to — that n8n's own HTTP layer runs. There is no imperative body to audit, no place for surprising side effects; the integration's entire behavior is readable as configuration (§10, §15). Its blast radius is its routing.</li>
+    <li><strong>Zero runtime dependencies — the supply chain is the source.</strong> The <code>dependencies</code> map is empty. Nothing is pulled at install or run time, so there is no transitive tree to be compromised, no postinstall script to fear, and nothing for a reviewer to chase. The verification program requires this, and it is independently the strongest supply-chain posture a package can take (§16).</li>
+    <li><strong>No ambient authority.</strong> The node reads no environment variables and touches no files. The API key lives in n8n's credential store and is injected as the <code>X-API-Key</code> header by the credential's generic-auth config — the node body never sees it. The optional trigger's state lives in n8n-managed workflow static data, not on disk. Every input is an explicit parameter (§16).</li>
+    <li><strong>The release is signed and externally reviewed.</strong> Each version is built by a named GitHub Actions workflow from a tagged commit and published with an npm provenance attestation signed via OIDC — anyone can verify which workflow and commit produced the bytes. n8n then manually vets the package and marks it verified. The trust is in the pipeline and the review, not in the author (§19).</li>
+  </ul>
+  <p>This is the same shape as the earlier pieces, relocated from inference to distribution. There, a single risky step was wrapped so that what reaches a user is reproducible and checkable without trusting any one model call. Here, the published artifact is wrapped so that what a stranger installs is reproducible and checkable without trusting the author's laptop: the bytes trace to a commit, the dependency surface is empty, the structure is configuration a linter and a human can read, and an outside party (n8n) has signed off. The capstone (MICT-FIELD-005) inherits exactly this for its own CI publish — Piece III is where the release pipeline earns the word "provenance."</p>
+
+  <!-- ---------- 10 COMPONENTS ---------- -->
+  <h2 id="s10"><span class="sec">§10</span> Component Design</h2>
+  <p class="muted">Each component lists its responsibility, inputs, outputs, and failure behavior.</p>
+
+  <h3><span class="sec">10.1</span> Credential Type — <code>ShovelsApi</code></h3>
+  <p><strong>Responsibility:</strong> hold the API key and inject it as the <code>X-API-Key</code> header on every request; provide a credential test. <strong>In:</strong> the user's key (masked field). <strong>Out:</strong> an authenticated request, transparently to every operation. <strong>Fails:</strong> a bad key surfaces on Test (red) and at runtime as a 401 the node maps to an auth error (§14). The node body never handles the key — least authority by construction (FR-CR-2).</p>
+
+  <h3><span class="sec">10.2</span> Node Description — <code>Shovels</code></h3>
+  <p><strong>Responsibility:</strong> declare the node's identity, defaults, credential reference, <code>requestDefaults</code> (base URL + Accept), and the Resource/Operation/field tree with their routing. <strong>In:</strong> the user's selections on the canvas. <strong>Out:</strong> the request n8n issues. <strong>Fails:</strong> nothing to fail imperatively — it is configuration; a malformed description fails the build/scan, not a user run.</p>
+
+  <h3><span class="sec">10.3</span> Permit Operations</h3>
+  <p><strong>Search</strong> (<code>GET /permits/search</code>): required <code>geo_id</code> + <code>permit_from</code>/<code>permit_to</code>, optional filters, paginated, items unwrapped. <strong>Get</strong> (<code>GET /permits/{id}</code>): a single permit by id. Both are pure declarative routing (FR-OP-1/2).</p>
+
+  <h3><span class="sec">10.4</span> Contractor Operations</h3>
+  <p><strong>Search</strong> (<code>GET /contractors/search</code>) and <strong>Get</strong> (<code>GET /contractors/{id}</code>), mirroring the permit operations' shape so the node is internally consistent and easy to extend (FR-OP-3/4).</p>
+
+  <h3><span class="sec">10.5</span> Address Resolution</h3>
+  <p><strong>Resolve geo_id</strong> (<code>GET /addresses/search</code>): turns an address into a <code>geo_id</code> for downstream searches. Documents the shortcut that state codes and ZIPs are already geo_ids, so the lookup is only needed for cities, counties, and street addresses (FR-OP-5, FR-PG-4).</p>
+
+  <h3><span class="sec">10.6</span> Pagination &amp; Output Shaping</h3>
+  <p><strong>Responsibility:</strong> expose Return All / Limit; when returning all, walk <code>next_page</code> via declarative generic pagination until null; unwrap the <code>items</code> array so each record is one n8n item. <strong>Fails:</strong> a thin or empty page is simply fewer/zero items, not an error; an API error mid-page is surfaced typed (FR-PG-1/2/3, FR-UX-5).</p>
+
+  <h3><span class="sec">10.7</span> Error Mapping</h3>
+  <p><strong>Responsibility:</strong> turn HTTP failures into n8n node errors carrying status + Shovels message (401 → auth, 429 → rate limit, others → generic API error), and honor continue-on-fail. The declarative layer surfaces non-2xx automatically; this component ensures the message is legible (FR-UX-3/4).</p>
+
+  <h3><span class="sec">10.8</span> Polling Trigger — <code>ShovelsTrigger</code> (optional)</h3>
+  <p><strong>Responsibility:</strong> on each poll, fetch recent permits for a geo_id, compare against a watermark in workflow static data, emit only new ones, advance the watermark. <strong>In:</strong> geo_id + poll schedule. <strong>Out:</strong> new permit items. <strong>Fails:</strong> an API error skips the cycle without losing the watermark; dedupe prevents replays (FR-TR-1..3). The one place an imperative <code>poll()</code> is warranted — and it still touches no files or env.</p>
+
+  <!-- ---------- 11 NODE MODEL & SCHEMAS ---------- -->
+  <h2 id="s11"><span class="sec">§11</span> Node Model &amp; Schemas</h2>
+  <p class="muted">The contracts the node is. Excerpts are illustrative and abbreviated; field formats are confirmed against the live Shovels reference at build time.</p>
+
+  <h3><span class="sec">11.1</span> Package Manifest (the <code>n8n</code> block + the empty dependency map)</h3>
+  <pre class="code"><span class="lbl">package.json (excerpt)</span>{
+  "name": "n8n-nodes-shovels",
+  "version": "1.0.0",
+  "license": "MIT",
+  "keywords": ["n8n-community-node-package", "shovels", "permits", "contractors"],
+  "repository": { "type": "git", "url": "git+https://github.com/jakemorganlabs/n8n-nodes-shovels.git" },
+  "n8n": {
+    "n8nNodesApiVersion": 1,
+    "credentials": ["dist/credentials/ShovelsApi.credentials.js"],
+    "nodes": ["dist/nodes/Shovels/Shovels.node.js"]
+  },
+  "dependencies": {},                       <span class="cm">// EMPTY -- zero runtime deps (FR-SC-1)</span>
+  "peerDependencies": { "n8n-workflow": "*" }
+  <span class="cm">// devDependencies (typescript, eslint, @n8n/* tooling) omitted -- build-time only</span>
+}</pre>
+
+  <h3><span class="sec">11.2</span> Credential Contract — <code>ShovelsApi.credentials.ts</code></h3>
+  <p>One masked field; generic auth injecting the <code>X-API-Key</code> header; a cheap test request (a state geo_id is its own geo_id, so the test needs no lookup). The node never touches the key (FR-CR-1..4).</p>
+  <pre class="code"><span class="lbl">TypeScript (excerpt)</span>export class ShovelsApi implements ICredentialType {
+  name = 'shovelsApi';
+  displayName = 'Shovels API';
+  documentationUrl = 'https://docs.shovels.ai';
+  properties: INodeProperties[] = [
+    { displayName: 'API Key', name: 'apiKey', type: 'string',
+      typeOptions: { password: true }, default: '', required: true },
+  ];
+  authenticate: IAuthenticateGeneric = {
+    type: 'generic',
+    properties: { header: { 'X-API-Key': '={{ $credentials.apiKey }}' } },
+  };
+  test: ICredentialTestRequest = {
+    request: {
+      baseURL: 'https://api.shovels.ai/v2',
+      url: '/permits/search',
+      qs: { geo_id: 'CA', permit_from: '2024-01-01', permit_to: '2024-01-02', size: 1 },
+    },
+  };
+}</pre>
+
+  <h3><span class="sec">11.3</span> Node Description Skeleton — <code>Shovels.node.ts</code></h3>
+  <pre class="code"><span class="lbl">TypeScript (excerpt)</span>export class Shovels implements INodeType {
+  description: INodeTypeDescription = {
+    displayName: 'Shovels',
+    name: 'shovels',
+    icon: 'file:shovels.svg',
+    group: ['transform'],
+    version: 1,
+    subtitle: '={{ $parameter["operation"] + ": " + $parameter["resource"] }}',
+    description: 'Query building permits and contractors from the Shovels API',
+    defaults: { name: 'Shovels' },
+    inputs: ['main'],
+    outputs: ['main'],
+    credentials: [{ name: 'shovelsApi', required: true }],
+    requestDefaults: {
+      baseURL: 'https://api.shovels.ai/v2',
+      headers: { Accept: 'application/json' },
+    },
+    properties: [ <span class="cm">/* Resource, Operation (per resource), fields with routing -- 11.4/11.5 */</span> ],
+  };
+}</pre>
+
+  <h3><span class="sec">11.4</span> Resource &amp; Operation (routing on operations)</h3>
+  <pre class="code"><span class="lbl">TypeScript (excerpt)</span>// Resource selector
+{ displayName: 'Resource', name: 'resource', type: 'options', noDataExpression: true,
+  default: 'permit',
+  options: [
+    { name: 'Permit', value: 'permit' },
+    { name: 'Contractor', value: 'contractor' },
+    { name: 'Address', value: 'address' },
+  ] }
+
+// Operations for the Permit resource
+{ displayName: 'Operation', name: 'operation', type: 'options', noDataExpression: true,
+  displayOptions: { show: { resource: ['permit'] } },
+  default: 'search',
+  options: [
+    { name: 'Search', value: 'search', action: 'Search permits',
+      routing: { request: { method: 'GET', url: '/permits/search' } } },
+    { name: 'Get', value: 'get', action: 'Get a permit',
+      routing: { request: { method: 'GET', url: '=/permits/{{ $parameter.permitId }}' } } },
+  ] }
+<span class="cm">// Contractor + Address operations follow the same pattern (10.4 / 10.5).</span></pre>
+
+  <h3><span class="sec">11.5</span> Search Fields (required + Additional Fields, sent as query)</h3>
+  <pre class="code"><span class="lbl">TypeScript (excerpt)</span>// Required on Permit · Search
+{ displayName: 'Geo ID', name: 'geoId', type: 'string', required: true, default: '',
+  description: 'State (CA) or ZIP (94103) directly; for a city/county/address, resolve it first',
+  displayOptions: { show: { resource: ['permit'], operation: ['search'] } },
+  routing: { send: { type: 'query', property: 'geo_id' } } }
+
+{ displayName: 'Permit From', name: 'permitFrom', type: 'string', required: true, default: '',
+  description: 'Start date, format YYYY-MM-DD',
+  displayOptions: { show: { resource: ['permit'], operation: ['search'] } },
+  routing: { send: { type: 'query', property: 'permit_from' } } }
+<span class="cm">// permit_to identical. Optional filters live under an Additional Fields collection:</span>
+{ displayName: 'Additional Fields', name: 'additionalFields', type: 'collection',
+  placeholder: 'Add Filter', default: {},
+  displayOptions: { show: { resource: ['permit'], operation: ['search'] } },
+  options: [
+    { displayName: 'Property Type', name: 'property_type', type: 'string', default: '',
+      routing: { send: { type: 'query', property: 'property_type' } } },
+    { displayName: 'Permit Tags', name: 'permit_tags', type: 'string', default: '',
+      routing: { send: { type: 'query', property: 'permit_tags' } } },
+  ] }</pre>
+
+  <h3><span class="sec">11.6</span> Pagination &amp; Output Unwrap (declarative)</h3>
+  <p>Return All drives generic pagination keyed on <code>next_page</code>; <code>postReceive</code> unwraps <code>items</code> so each record is one n8n item (FR-PG-1/2/3).</p>
+  <pre class="code"><span class="lbl">TypeScript (excerpt)</span>// A 'Return All' boolean + a 'Limit' (shown when Return All is off), then:
+routing: {
+  send: { paginate: '={{ $parameter.returnAll }}' },
+  operations: {
+    pagination: {
+      type: 'generic',
+      properties: {
+        continue: '={{ $response.body.next_page !== null }}',
+        request: { qs: { page: '={{ $response.body.next_page }}' } },
+      },
+    },
+  },
+  output: {
+    postReceive: [
+      { type: 'rootProperty', properties: { property: 'items' } },  <span class="cm">// unwrap items[]</span>
+    ],
+  },
+}</pre>
+
+  <h3><span class="sec">11.7</span> geo_id Resolution (Address resource)</h3>
+  <pre class="code"><span class="lbl">Resolution model</span>state code "CA"   -->  IS a geo_id            (no lookup)
+ZIP code  "94103" -->  IS a geo_id            (no lookup)
+city / county     -->  resolve via geographies / Address search
+street address    -->  GET /addresses/search  -->  returns geo_id  -->  feed into /permits/search
+<span class="cm"># The Address - Resolve operation exists so a workflow can start from an address.</span>
+<span class="cm"># Documented in the README so users don't pass an un-resolved city name as a geo_id.</span></pre>
+
+  <h3><span class="sec">11.8</span> Versioned Configuration (the build-time constants)</h3>
+  <pre class="code"><span class="lbl">Config v1.0 (node + release constants)</span>api.base_url          = "https://api.shovels.ai/v2"
+api.auth_header       = "X-API-Key"
+api.date_format       = "YYYY-MM-DD"
+api.page_cursor       = "next_page"          <span class="cm"># null terminates pagination (FR-PG-2)</span>
+node.api_version      = 1                     <span class="cm"># n8nNodesApiVersion</span>
+node.version          = 1                     <span class="cm"># description.version (FR-NS-5)</span>
+pkg.license           = "MIT"
+pkg.runtime_deps      = 0                     <span class="cm"># HARD: empty dependencies (FR-SC-1)</span>
+ci.scan               = "@n8n/scan-community-package n8n-nodes-shovels"  <span class="cm"># gate (FR-SC-4)</span>
+ci.publish            = "npm publish --provenance --access public"      <span class="cm"># OIDC-signed (FR-SC-2)</span></pre>
+
+  <!-- ---------- 12 SEQUENCES ---------- -->
+  <h2 id="s12"><span class="sec">§12</span> Processing Sequences</h2>
+
+  <h3><span class="sec">12.A</span> Request Execution (per operation, at runtime)</h3>
+  <ol>
+    <li><strong>Resolve selections</strong>. n8n reads the chosen resource/operation and the field values from the node.</li>
+    <li><strong>Build the request</strong>. The operation's <code>routing.request</code> sets method + URL against <code>requestDefaults</code>; <code>send</code> mappings attach query params (geo_id, dates, filters) or the path id.</li>
+    <li><strong>Authenticate</strong>. The credential injects the <code>X-API-Key</code> header (generic auth); the node body never sees the key.</li>
+    <li><strong>Paginate (search, if Return All)</strong>. Issue the request; while <code>next_page</code> is non-null, re-issue with <code>page = next_page</code>, accumulating <code>items</code>; else honor Limit.</li>
+    <li><strong>Shape output</strong>. <code>postReceive</code> unwraps <code>items</code> so each record is one n8n item; a single-object Get returns that object.</li>
+    <li><strong>Handle errors</strong>. A non-2xx surfaces as a typed node error (status + message); continue-on-fail, if set, lets good items proceed (§14).</li>
+  </ol>
+
+  <h3><span class="sec">12.B</span> Build (local, S13)</h3>
+  <ol>
+    <li><strong>Scaffold</strong> with the <code>n8n-node</code> CLI (declarative template) — node, credential, icon, manifest, publish workflow.</li>
+    <li><strong>Implement</strong> the credential (11.2) and the node routing (11.3–11.6); keep <code>dependencies</code> empty; touch no files or env.</li>
+    <li><strong>Build</strong> with <code>tsc</code> to <code>dist/</code>; confirm the compiled paths match the manifest's <code>n8n</code> block.</li>
+    <li><strong>Link</strong> the package into a local self-hosted n8n instance.</li>
+    <li><strong>Test</strong> each operation live against Shovels: credential test, search + pagination, get, address resolution, and the error/empty cases (§18).</li>
+  </ol>
+
+  <h3><span class="sec">12.C</span> Ship — Publish &amp; Provenance (CI, S14)</h3>
+  <ol>
+    <li><strong>Scan</strong> locally: <code>npx @n8n/scan-community-package n8n-nodes-shovels</code> must pass (structure, no deps, no fs/env, naming).</li>
+    <li><strong>Tag</strong> a release commit (SemVer); create a GitHub release.</li>
+    <li><strong>CI builds and scans</strong>; a scan failure stops the pipeline (no publish) (FR-SC-4).</li>
+    <li><strong>CI publishes</strong> with <code>npm publish --provenance --access public</code>, the workflow holding <code>id-token: write</code> so OIDC signs the attestation (FR-SC-2).</li>
+    <li><strong>npm records provenance</strong> binding the artifact to this repo + commit + workflow; the package page shows it.</li>
+  </ol>
+
+  <h3><span class="sec">12.D</span> Ship — Verification (Creator Portal, S14)</h3>
+  <ol>
+    <li><strong>Pre-flight the gating rules</strong> (FR-VF-1): new integration, one service, no logic/flow-control, no env/file access, English-only, MIT, scan passing.</li>
+    <li><strong>Submit</strong> the published, provenance-carrying version through the Creator Portal.</li>
+    <li><strong>n8n vets</strong> the package (manual quality/security review).</li>
+    <li><strong>Iterate</strong> on any change-request: fix, publish a new signed version, re-submit (FR-VF-3).</li>
+    <li><strong>Verified</strong>: shield + one-click install on Cloud and self-hosted. <em>"Published a package" becomes "n8n reviewed and verified my integration."</em></li>
+  </ol>
+  <p class="muted">The case study (S14) reports this sequence with the artifacts attached: the npm provenance panel, the CI run, the scan output, and the verification status — the same instinct as the other pieces, that a screenshot of a passing pipeline outweighs a paragraph of claims.</p>
+
+  <!-- ---------- 13 VERIFIED-NODE DISCIPLINE ---------- -->
+  <h2 id="s13"><span class="sec">§13</span> The Verified-Node Discipline</h2>
+  <p>The trustworthiness of the release rests on three gates working together, none of which is the author's word.</p>
+  <p><strong>The scan is the structural gate.</strong> <code>@n8n/scan-community-package</code> runs locally and in CI and enforces the things a reviewer would otherwise check by hand: the package structure, the empty dependency map, the absence of file/env access, naming conventions, and the manifest. A scan failure is a red build — it cannot be waved through (FR-SC-4, NFR-QA-1). This is Piece I's schema gate in a new place: a deterministic check that must pass before anything moves downstream.</p>
+  <p><strong>Provenance is the release gate.</strong> Publishing happens only from CI, only from a tagged commit, only with an OIDC-signed attestation. After 1&nbsp;May&nbsp;2026 a hand-published package simply cannot be verified, so the discipline is enforced by the program, not just chosen. The attestation is the proof that the bytes on npm are the bytes the workflow built from that commit — the supply chain is closed and inspectable (FR-SC-2/3/6).</p>
+  <p><strong>n8n verification is the external review.</strong> The final gate is a human at n8n vetting the package for quality and security. Passing it is what converts a published package into a credential: the shield, and one-click install across Cloud and self-hosted. The author cannot grant this to themselves — which is exactly why it is worth having (FR-VF-2).</p>
+  <pre><span class="lbl">Figure 3 — The trust chain</span>
+   source (tagged commit)
+        |
+        v
+   [ scan gate ] --fail--> BUILD RED (no publish)
+        | pass
+        v
+   [ CI build + OIDC-signed publish ] ----> npm artifact + provenance attestation
+        |                                          |
+        |                              anyone can verify: which workflow,
+        |                              which repo, which commit built this
+        v                                          |
+   [ n8n manual review ] <----------- fetched for vetting
+        | accept
+        v
+   VERIFIED  -->  shield + 1-click install (Cloud + self-hosted)</pre>
+  <p>Together these give the reliability guarantee (NFR-SE-2): what a stranger installs is reproducible from a known commit, free of a transitive dependency surface, structurally checked, and reviewed by a third party. As with the earlier pieces, the property is structural — it holds because of where the gates sit, not because the author is trusted.</p>
+
+  <div class="box plain" data-label="Why provenance, not just a published package">
+    <p style="font-size:13px;margin:0">A clean README and a green npm page tell a user the package <em>exists</em>; they do not tell them the published bytes match the source, that no postinstall script runs, or that anyone reviewed it. Provenance answers the first cryptographically: the attestation binds the artifact to a specific workflow and commit, so a tampered or laptop-pushed build is detectable rather than indistinguishable. Verification answers the third: n8n looked. The empty dependency map answers the second: there is nothing to run. The package being installable is the convenience; the provenance and the review are the guarantee — and they are the part that generalizes to the capstone's release pipeline.</p>
+  </div>
+
+  <!-- ---------- 14 FAILURE ---------- -->
+  <h2 id="s14"><span class="sec">§14</span> Failure Modes &amp; Error Handling</h2>
+  <p>Every external interaction has a defined behavior. The principle throughout: <strong>transient → retry/backoff; terminal → surface clearly; no-match → empty, not error; batch item fails → honor continue-on-fail; scan/provenance fails → no publish.</strong></p>
+  <table>
+    <caption>Failure matrix</caption>
+    <thead><tr><th>Condition</th><th>Detection</th><th>Handling</th><th>Outcome</th></tr></thead>
+    <tbody>
+      <tr><td>Bad / missing API key</td><td>HTTP 401</td><td>Surface as an auth/credential node error; Test shows red</td><td>User fixes the key; nothing leaks</td></tr>
+      <tr><td>Rate limited</td><td>HTTP 429</td><td>Retryable error / backoff; message names rate limiting</td><td>Retry succeeds; no silent drop</td></tr>
+      <tr><td>Bad permit/contractor id</td><td>4xx on Get</td><td>Typed node error; with continue-on-fail, skip that item</td><td>Other items proceed</td></tr>
+      <tr><td>Un-resolved city/county passed as geo_id</td><td>Empty / invalid result</td><td>Field description steers users to resolve first; empty returned, not thrown</td><td>Prevented at the form (FR-PG-4/5)</td></tr>
+      <tr><td>Valid query, no matches</td><td>Empty <code>items</code></td><td>Return zero items</td><td>Distinguishable from an error (FR-UX-5)</td></tr>
+      <tr><td>API error mid-pagination</td><td>Non-2xx on a page</td><td>Surface typed; accumulated items not silently discarded</td><td>User sees the failure point</td></tr>
+      <tr><td>Malformed date</td><td>Field description + API 4xx</td><td>Format stated on the field (YYYY-MM-DD); API message surfaced</td><td>Caught early</td></tr>
+      <tr><td>Scan fails (CI)</td><td><code>@n8n/scan-community-package</code></td><td>Build red; no publish</td><td>Nothing ships unscanned (FR-SC-4)</td></tr>
+      <tr><td>Provenance / OIDC misconfig (CI)</td><td>Publish step error (missing <code>id-token: write</code>)</td><td>Build red; fix permissions, re-run</td><td>No un-attested verification build (FR-SC-2)</td></tr>
+      <tr><td>Trigger poll error (optional)</td><td>Non-2xx on poll</td><td>Skip the cycle; keep the watermark</td><td>No lost or duplicated permits (FR-TR-2/3)</td></tr>
+    </tbody>
+  </table>
+
+  <!-- ---------- 15 REQUEST & ROUTING ---------- -->
+  <h2 id="s15"><span class="sec">§15</span> Request &amp; Routing Configuration</h2>
+  <p>Because the node is declarative, "how it makes a call" is configuration, not code — which is what keeps the trust surface small and the package reviewable. The mechanics:</p>
+  <ul>
+    <li><strong>Request defaults.</strong> <code>requestDefaults</code> sets the base URL (<code>…/v2</code>) and <code>Accept: application/json</code> once; every operation inherits them, so no operation hard-codes a host.</li>
+    <li><strong>Operation routing.</strong> Each operation's <code>routing.request</code> carries its method and path; path ids use an expression (<code>=/permits/{{ $parameter.permitId }}</code>). One operation maps to exactly one request (FR-OP-6).</li>
+    <li><strong>Parameter send.</strong> Search fields declare <code>routing.send</code> with <code>type: 'query'</code> and the API's snake_case property name (<code>geo_id</code>, <code>permit_from</code>, …), so the UI label and the wire name can differ while the mapping stays explicit.</li>
+    <li><strong>Authentication.</strong> Injected by the credential's generic-auth header, not by any operation; rotating the auth scheme is a credential change, not a node-wide edit.</li>
+    <li><strong>Pagination.</strong> Declarative generic pagination, gated on a Return All boolean, continues while <code>next_page</code> is non-null and advances <code>page</code> from it (§11.6). The user's Limit bounds it when Return All is off, so breadth is always intentional (NFR-PE-1).</li>
+    <li><strong>Output shaping.</strong> A <code>postReceive</code> <code>rootProperty</code> unwraps <code>items</code> so downstream nodes receive records, not an envelope (FR-PG-3).</li>
+    <li><strong>Credential test.</strong> A bounded request (a state geo_id, a one-day window, <code>size: 1</code>) lets n8n verify the key on save without a meaningful quota cost (FR-CR-3).</li>
+  </ul>
+
+  <!-- ---------- 16 SECURITY ---------- -->
+  <h2 id="s16"><span class="sec">§16</span> Security &amp; Supply-Chain Design</h2>
+  <ul>
+    <li><strong>Key handling</strong> — the API key lives only in n8n's encrypted credential store and is injected as the <code>X-API-Key</code> header by the credential; the node body never reads it, and it never appears in source, logs, the node's output, or the published artifact (NFR-SE-1).</li>
+    <li><strong>No ambient authority</strong> — the node reads no environment variables and touches no files; all input is an explicit parameter. There is no path by which the node can exfiltrate local state, because it has no access to any.</li>
+    <li><strong>Zero dependency surface</strong> — an empty <code>dependencies</code> map means nothing is fetched at install or run time: no transitive packages, no postinstall scripts, nothing for an attacker to poison upstream or for a reviewer to chase (NFR-DP-1).</li>
+    <li><strong>Provenance as the supply-chain guarantee</strong> — every verification-bound version is built by a named CI workflow from a tagged commit and published with an OIDC-signed attestation; the bytes on npm are cryptographically tied to the source. A package pushed from a laptop is both detectable and, post-May-2026, un-verifiable (NFR-SE-2).</li>
+    <li><strong>External review</strong> — n8n's verification is an independent security/quality check; the shield is a third party's statement, not the author's.</li>
+    <li><strong>Least privilege at the boundary</strong> — the credential is scoped to the single Shovels header; the node integrates exactly one service; the optional trigger's only state is an n8n-managed watermark. Nothing in the package reaches beyond what its one job needs.</li>
+  </ul>
+
+  <!-- ---------- 17 OBSERVABILITY & FOOTPRINT ---------- -->
+  <h2 id="s17"><span class="sec">§17</span> Release Observability &amp; Footprint</h2>
+  <p>A node is not a service with uptime to chart; its "observability" is the inspectability of what shipped and how, and its "cost" is the footprint it imposes and the API quota it spends.</p>
+  <div class="kv">
+    <dt>What shipped</dt><dd>Every release is answerable from four durable records: the npm <strong>provenance panel</strong> (workflow + commit), the <strong>CI run logs</strong> (build + scan + publish), the <strong>tagged commit</strong>, and a <strong>changelog</strong>. "What is in x.y.z, built by what, from where" needs no trust to answer (NFR-OB-1).</dd>
+    <dt>Install footprint</dt><dd>Source + an icon; zero transitive packages. The node adds negligible weight and negligible runtime overhead beyond the API round-trip (NFR-PE-1).</dd>
+    <dt>API quota</dt><dd>The node spends the user's Shovels quota, not the author's. The credential test is deliberately tiny; pagination is bounded by Return All / Limit so a broad query is an explicit choice, not an accident.</dd>
+    <dt>Verification status</dt><dd>The shield (or its absence) and the npm provenance badge are the user-facing trust signals, surfaced in the README (FR-DOC-4).</dd>
+  </div>
+
+  <!-- ---------- 18 EVAL / TEST ---------- -->
+  <h2 id="s18"><span class="sec">§18</span> Evaluation &amp; Test Strategy</h2>
+  <p>The node is checked at three levels before it is offered for verification — structural, behavioral, and supply-chain — because "it worked when I clicked it" is a hobbyist and a passing scan plus a signed release is an engineer.</p>
+  <table>
+    <thead><tr><th>Level</th><th>What it asserts</th><th>Pass bar</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Structural</strong> — scan</td><td><code>@n8n/scan-community-package</code>: correct package structure, empty runtime deps, no file/env access, naming, manifest</td><td>Passes clean (gate)</td></tr>
+      <tr><td><strong>Structural</strong> — build</td><td><code>tsc</code> compiles to <code>dist/</code>; the compiled node + credential paths match the manifest; the icon is present</td><td>Clean build</td></tr>
+      <tr><td><strong>Behavioral</strong> — credential</td><td>Test request returns 2xx with a valid key, fails clearly with an invalid one</td><td>Green/red as expected</td></tr>
+      <tr><td><strong>Behavioral</strong> — operations</td><td>Each operation runs live in self-hosted n8n: permit/contractor search + get, address resolution</td><td>Correct items returned</td></tr>
+      <tr><td><strong>Behavioral</strong> — pagination</td><td>Return All walks <code>next_page</code> to the end; Limit caps; <code>items</code> unwrapped to one record per item</td><td>Full set / capped set</td></tr>
+      <tr><td><strong>Behavioral</strong> — errors</td><td>401 → auth error, 429 → rate-limit, no-match → empty, continue-on-fail respected</td><td>Typed, legible, non-throwing on empty</td></tr>
+      <tr><td><strong>Supply-chain</strong> — provenance</td><td>The published artifact shows a build-provenance attestation tracing to repo + commit + workflow</td><td>Attestation present + correct</td></tr>
+      <tr><td><strong>External</strong> — verification</td><td>The Creator-Portal submission clears n8n's manual review</td><td>Verified shield granted</td></tr>
+    </tbody>
+  </table>
+  <p>The scan and the build run in CI on every release (§19), so structural regressions cannot ship. The behavioral checks are run in the local self-hosted instance against the live API; the supply-chain and external checks are the publish and verification steps themselves. This is the same instinct as the other pieces' eval suites — make the bar a thing that is <em>run</em>, not a thing that is claimed.</p>
+
+  <!-- ---------- 19 CI/CD ---------- -->
+  <h2 id="s19"><span class="sec">§19</span> CI/CD &amp; the Publish Pipeline</h2>
+  <p>The 2026 differentiator — and the reason this piece is the program's "provenance" exemplar — is that the publish pipeline is itself CI/CD with supply-chain provenance. Releasing is not a command run by hand; it is a workflow that builds, scans, and signs.</p>
+  <ul>
+    <li><strong>On a tagged release</strong>, a GitHub Actions workflow checks out the commit, installs, builds, and scans.</li>
+    <li><strong>The build fails (no publish) if the scan does not pass</strong> (FR-SC-4) — an unscanned or non-compliant package cannot ship.</li>
+    <li><strong>Publishing requests an OIDC token</strong> (<code>id-token: write</code>) and runs <code>npm publish --provenance --access public</code>, so npm records an attestation binding the artifact to this workflow, repository, and commit (FR-SC-2).</li>
+    <li><strong>Hand-publishing is forbidden for verification</strong> (program rule since 1&nbsp;May&nbsp;2026): the workflow is the only sanctioned publisher (FR-SC-3).</li>
+    <li><strong>The README surfaces the provenance and (once granted) verified status</strong>, so the trust posture is visible to anyone browsing the package (FR-DOC-4).</li>
+  </ul>
+  <pre class="code"><span class="lbl">publish.yml (sketch)</span>on:
+  release:
+    types: [published]
+permissions:
+  contents: read
+  id-token: write                       <span class="cm"># REQUIRED for OIDC provenance signing (FR-SC-2)</span>
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, registry-url: 'https://registry.npmjs.org' }
+      - run: npm ci
+      - run: npm run build
+      - run: npx @n8n/scan-community-package n8n-nodes-shovels   <span class="cm"># gate: fail -> no publish</span>
+      - run: npm publish --provenance --access public            <span class="cm"># OIDC-signed attestation</span>
+        env: { NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }} }</pre>
+  <p class="muted">This is the line that closes the loop for a reviewer: not "I published an npm package," but "every release is built and scanned in CI and published with a cryptographic provenance attestation, and n8n reviewed and verified the result." It is the operational proof that the guarantees in §9 hold for every version, not just the day it was demoed — and it is the exact discipline the capstone's release pipeline (MICT-FIELD-005, §19) inherits.</p>
+
+  <!-- ---------- 20 DISTRIBUTION ---------- -->
+  <h2 id="s20"><span class="sec">§20</span> Distribution Topology</h2>
+  <pre><span class="lbl">Figure 4 — Distribution</span>     tagged commit
+          |
+          v
+   +----------------+   --provenance-->   +-------------------------+
+   | GitHub Actions |   npm publish       |  npm registry           |
+   | (build·scan·   |  ---------------->   |  n8n-nodes-shovels       |
+   |  sign)         |                     |  + provenance attestation|
+   +----------------+                     +------------+------------+
+                                                       |
+                              +------------------------+------------------------+
+                              |                                                 |
+                   n8n fetches for vetting                          verified -> nodes panel
+                              |                                                 |
+                              v                                                 v
+                   +-------------------+                          +---------------------------+
+                   | n8n Creator Portal|  --(manual review)-->     |  1-click install          |
+                   | (verification)    |                          |  self-hosted + n8n Cloud  |
+                   +-------------------+                          +---------------------------+
+
+   Dev loop (separate): local self-hosted n8n  <--  npm link / linked package  <--  dist/</pre>
+  <div class="kv">
+    <dt>Source</dt><dd>Public GitHub repo (<code>jakemorganlabs/n8n-nodes-shovels</code>); releases cut from tags.</dd>
+    <dt>Publisher</dt><dd>GitHub Actions only, with OIDC-signed provenance; <code>NPM_TOKEN</code> as a repo secret.</dd>
+    <dt>Registry</dt><dd>Public npm; the package the wider n8n ecosystem and the Creator Portal consume.</dd>
+    <dt>Install</dt><dd>Once verified: one click from the n8n nodes panel on self-hosted and Cloud; pre-verification, self-hosted manual install from npm.</dd>
+    <dt>Dev / test</dt><dd>Local self-hosted n8n with the package linked, exercised against the live Shovels API (§18).</dd>
+  </div>
+
+  <!-- ---------- 21 EXTENSIBILITY ---------- -->
+  <h2 id="s21"><span class="sec">§21</span> Extensibility &amp; Future Work</h2>
+  <ul>
+    <li><strong>More resources.</strong> The declarative pattern makes a new operation a configuration addition: Addresses-as-data, Markets/metrics, Lists (valid tags/filters), and the Decisions API beta are natural next operations, each a routing block alongside the existing ones (NFR-MA-1) — held out of v1.0 to keep the first review small.</li>
+    <li><strong>The polling trigger.</strong> The optional "new permits since last run" trigger (§3.9) is the most GTM-flavored thing the package could ship — it turns the node from a query tool into a monitor, and it is the obvious v1.1 once the read operations are verified.</li>
+    <li><strong>Richer field coverage.</strong> Shovels' "10x more parameters" (property specs, contractor history, permit details) can be folded into the Additional Fields collections incrementally, without touching existing operations.</li>
+    <li><strong>The capstone tie-in.</strong> This verified node plugs into FieldOps Intelligence (MICT-FIELD-005) as an optional permit/jurisdiction enrichment tool for a compliance/takeoff agent — and, more importantly, its CI publish pipeline is the provenance discipline the capstone reuses for its own release. Piece III is where that pipeline was proven.</li>
+    <li><strong>Versioned evolution.</strong> A breaking change to the parameter surface becomes node <code>version: 2</code> behind the same package, so existing workflows keep working — the maintainability path the version field (FR-NS-5) was put there to enable.</li>
+  </ul>
+
+  <!-- ====================================================================== -->
+  <!-- APPENDICES                                                              -->
+  <!-- ====================================================================== -->
+  <div class="part" id="appendices">
+    <div class="part-num">A</div>
+    <div class="part-title">Appendices</div>
+    <div class="part-meta">Traceability · worked example · glossary</div>
+  </div>
+
+  <h2 id="sa"><span class="sec">A</span> Requirement Traceability Matrix</h2>
+  <p class="muted">Every requirement maps to the design that satisfies it — the link from "what" to "how."</p>
+  <table>
+    <thead><tr><th class="id">Requirement</th><th>Satisfied by</th></tr></thead>
+    <tbody>
+      <tr><td class="id">FR-NS-1..5</td><td>§8.3, §10.2, §11.1, §11.3, §12.B</td></tr>
+      <tr><td class="id">FR-CR-1..4</td><td>§10.1, §11.2, §15 (auth, test)</td></tr>
+      <tr><td class="id">FR-OP-1..6</td><td>§10.3–10.5, §11.4, §15</td></tr>
+      <tr><td class="id">FR-PG-1..5</td><td>§10.6, §11.6, §11.7, §15</td></tr>
+      <tr><td class="id">FR-UX-1..5</td><td>§10.7, §11.5, §14</td></tr>
+      <tr><td class="id">FR-DOC-1..4</td><td>§17, §19 (README + badges), Document Control</td></tr>
+      <tr><td class="id">FR-SC-1..6</td><td>§9, §11.1, §11.8, §13, §19</td></tr>
+      <tr><td class="id">FR-VF-1..3</td><td>§12.D, §13, §5.5</td></tr>
+      <tr><td class="id">FR-TR-1..3</td><td>§10.8, §6 (static-data watermark)</td></tr>
+      <tr><td class="id">NFR-DP-1</td><td>§9, §11.1, §16</td></tr>
+      <tr><td class="id">NFR-CP-1</td><td>§11.1, §11.8 (node + API versions)</td></tr>
+      <tr><td class="id">NFR-SE-1..2</td><td>§16, §19 (provenance)</td></tr>
+      <tr><td class="id">NFR-RE-1</td><td>§14, §15</td></tr>
+      <tr><td class="id">NFR-PE-1</td><td>§15 (bounded pagination), §17</td></tr>
+      <tr><td class="id">NFR-MA-1</td><td>§10, §11, §21</td></tr>
+      <tr><td class="id">NFR-QA-1</td><td>§13, §18, §19 (scan gate)</td></tr>
+      <tr><td class="id">NFR-CO-1</td><td>§12.D, Document Control</td></tr>
+      <tr><td class="id">NFR-OB-1</td><td>§17, §19</td></tr>
+    </tbody>
+  </table>
+
+  <h2 id="sb"><span class="sec">B</span> Worked Example — A Query, and a Ship</h2>
+  <p>One real Morgan-ICT-flavored question carried through the node, then the same package carried through the release. (geo_id values and ids are illustrative; the mechanics are exact.)</p>
+
+  <h4>B.1 — The question</h4>
+  <pre class="code">"Which residential HVAC contractors pulled permits in San Jose in the last 90 days?"</pre>
+
+  <h4>B.2 — Resolve the geo_id (San Jose is a city → needs a lookup)</h4>
+  <pre class="code">Address - Resolve  -->  GET /addresses/search?...  -->  geo_id: "geo_5f...sj"   <span class="cm"># illustrative</span>
+<span class="cm"># had the question said "CA" or "95112", we'd skip this -- a state/ZIP IS a geo_id (FR-PG-4).</span></pre>
+
+  <h4>B.3 — Search permits (paginated)</h4>
+  <pre class="code">Permit - Search, Return All ON
+  geo_id        = geo_5f...sj
+  permit_from   = 2026-03-08          <span class="cm"># 90 days ago</span>
+  permit_to     = 2026-06-06          <span class="cm"># today</span>
+  property_type = residential          <span class="cm"># Additional Fields</span>
+  permit_tags   = hvac                 <span class="cm"># Additional Fields</span>
+
+response page 1: { items: [ {id:"caf3...", contractor_id:"e79c..."}, ... ], page:1, size:50, next_page:2 }
+  --> next_page != null  -->  re-request with page=2  -->  ... until next_page == null
+  --> postReceive unwraps items[]  -->  one n8n item per permit (FR-PG-2/3)</pre>
+
+  <h4>B.4 — Get the contractor behind a permit</h4>
+  <pre class="code">Contractor - Get, id = "e79c..."  -->  GET /contractors/e79c...
+  --> { id:"e79c...", business_name:"...", license:"...", metrics:{...} }   <span class="cm"># full object</span></pre>
+
+  <h4>B.5 — Edge cases (handled, not crashed)</h4>
+  <pre class="code">expired key      -->  401  -->  node error "auth: check your Shovels API key" (FR-UX-3)
+rate limited     -->  429  -->  retryable / backoff, message names rate limiting
+valid, no match  -->  items: []  -->  zero n8n items, NOT an error (FR-UX-5)
+city as geo_id   -->  field description steered the user to Resolve first (FR-PG-4/5)</pre>
+
+  <h4>B.6 — The ship walkthrough</h4>
+  <pre class="code">npx @n8n/scan-community-package n8n-nodes-shovels   -->  PASS          (FR-SC-4)
+git tag v1.0.0 &amp;&amp; gh release create v1.0.0          -->  triggers CI
+CI: checkout -> npm ci -> build -> scan -> publish --provenance         (FR-SC-2)
+npm: n8n-nodes-shovels@1.0.0  +  provenance attestation (repo+commit+workflow)  (AC-9)
+submit @ n8n Creator Portal  -->  n8n manual review  -->  (iterate if needed)  (FR-VF-2/3)
+VERIFIED  -->  shield + 1-click install on Cloud + self-hosted               (AC-12)
+<span class="cm"># "Published a package" -> "n8n reviewed and verified my integration."</span></pre>
+
+  <h2 id="sc"><span class="sec">C</span> Glossary</h2>
+  <div class="kv">
+    <dt>Declarative node</dt><dd>A node defined as configuration (a routing table) that n8n's HTTP layer executes, as opposed to a programmatic node with an imperative <code>execute()</code> method. Smaller surface, easier to review.</dd>
+    <dt>Resource / Operation</dt><dd>n8n's two-level convention for organizing a node's actions: a Resource (Permit, Contractor, Address) and, per resource, an Operation (Search, Get, Resolve).</dd>
+    <dt>Routing</dt><dd>The declarative mapping from an operation/parameter to an HTTP request — method, URL, query/body params, pagination, and output shaping — that n8n runs.</dd>
+    <dt>requestDefaults</dt><dd>Node-level defaults (base URL, headers) inherited by every operation, so no operation hard-codes a host.</dd>
+    <dt>Credential type</dt><dd>The n8n object that holds a service's secret and injects it into requests. Here, the Shovels API key as an <code>X-API-Key</code> header.</dd>
+    <dt>Generic auth</dt><dd>The credential authentication mode for sending auth data in a header, query string, or body — used here to inject the API-key header.</dd>
+    <dt>Credential test</dt><dd>A bounded request n8n makes when a user saves a credential, to show a green check or a clear failure.</dd>
+    <dt>geo_id</dt><dd>Shovels' unified geographic identifier. A state code or ZIP is itself a geo_id; a city, county, or address must be resolved (via the Address endpoint) first.</dd>
+    <dt>Pagination (next_page)</dt><dd>Shovels' page-based scheme: each response carries <code>page</code>, <code>size</code>, and a <code>next_page</code> cursor; iteration ends when <code>next_page</code> is null.</dd>
+    <dt>postReceive / rootProperty</dt><dd>A declarative output step that unwraps a nested array (here, <code>items</code>) so each element becomes one n8n item.</dd>
+    <dt>Runtime dependency</dt><dd>A package pulled at install/run time. Verified n8n nodes forbid them; this package's <code>dependencies</code> map is empty.</dd>
+    <dt>peerDependency</dt><dd>A package the host (n8n) provides at runtime (here <code>n8n-workflow</code>) — declared but not bundled, so it is not a runtime dependency of the node.</dd>
+    <dt>Provenance / attestation</dt><dd>A signed statement recording which workflow, repository, and commit built an npm package, letting anyone verify the published bytes' origin.</dd>
+    <dt>OIDC (id-token: write)</dt><dd>The GitHub Actions mechanism that lets the workflow obtain a short-lived identity token used to sign the provenance statement.</dd>
+    <dt>@n8n/scan-community-package</dt><dd>The linter/scanner that checks a community package against the program's structural rules (no deps, no fs/env, naming, manifest). Must pass for verification.</dd>
+    <dt>Creator Portal</dt><dd>n8n's submission surface for the Verified Community Nodes Program.</dd>
+    <dt>Verified node / shield</dt><dd>A community node n8n has manually reviewed; it carries a shield and installs in one click from the canvas on self-hosted and Cloud.</dd>
+    <dt>n8n-community-node-package</dt><dd>The npm keyword that marks a package as an n8n community node, used for discovery.</dd>
+    <dt>Polling trigger</dt><dd>A trigger node that periodically calls an API and emits new results; here, optional, watching for new permits and persisting its watermark in workflow static data.</dd>
+    <dt>Workflow static data</dt><dd>n8n-managed per-workflow state a node can read/write across executions — used by the optional trigger instead of a file, keeping the no-fs/no-env constraint.</dd>
+  </div>
+
+  <!-- ============================= FOOTER ============================= -->
+  <div class="footer">
+    Shovels for n8n — Verified Community Node · MICT-NODE-003 · v1.0 · jakemorganlabs
+    <em>"Configuration over code; provenance over trust."</em>
+  </div>
+
+</div>
+</body>
+</html>
