@@ -4,17 +4,33 @@ This directory holds screenshots of the npm provenance panel for each published 
 
 The provenance panel shows that the package was built by a named GitHub Actions workflow from a tagged commit in this repository, with an OIDC-signed attestation that anyone can verify.
 
-## Placeholder slots
+## Published versions
 
-| Version | Status | Screenshot |
-|---------|--------|------------|
-| v0.1.0  | Pending (validation cut) | `v0.1.0.png` — operator capture |
-| v1.0.0  | Pending (release cut)    | `v1.0.0.png` — operator capture |
+| Version | Date (UTC) | Workflow run | Sigstore logIndex | Screenshot | Status |
+|---------|-----------|--------------|-------------------|-----------|--------|
+| v0.1.4  | 2026-07-12 | [run 29188781186](https://github.com/jakemorganlabs/shovels_n8n_nodes/actions/runs/29188781186) | [2150541117](https://search.sigstore.dev/?logIndex=2150541117) | `v0.1.4.png` — slot (operator capture) | Published (validation cut) |
+| v1.0.0  | 2026-07-12 | [run 29188833044](https://github.com/jakemorganlabs/shovels_n8n_nodes/actions/runs/29188833044) | [2150594713](https://search.sigstore.dev/?logIndex=2150594713) | `v1.0.0.png` — slot (operator capture) | Published (stable release) |
 
-## Operator steps
+Provenance predicate type: `https://slsa.dev/provenance/v1` (SLSA v1).
+Authoritative registry attestation URLs:
+- `https://registry.npmjs.org/-/npm/v1/attestations/n8n-nodes-shovels@0.1.4`
+- `https://registry.npmjs.org/-/npm/v1/attestations/n8n-nodes-shovels@1.0.0`
 
-1. After CI publishes a version, visit `https://www.npmjs.com/package/n8n-nodes-shovels`
-2. Scroll to the **Provenance** section on the package page
-3. Screenshot the panel showing: repository URL, commit SHA, workflow path, run ID
-4. Save the screenshot here as `vX.Y.Z.png`
-5. Commit to `closeout-evidence` branch per `docs/runbook.md`
+## Verifying provenance yourself
+
+任何人都可以验证 provenance without trusting the author:
+
+```bash
+npm install -g npm@latest  # npm 9.6+ for `sigstore` verification
+npm audit signatures        # checks published signature against sigstore transparency log
+# Or inspect the attestation directly:
+curl https://registry.npmjs.org/-/npm/v1/attestations/n8n-nodes-shovels@1.0.0
+```
+
+The attestation proves the package was built by the `publish` workflow in
+`jakemorganlabs/shovels_n8n_nodes` from the tagged commit `v1.0.0`. Trust is a
+property of the pipeline, not of the author.
+
+## Operator step
+
+Capture screenshots of the npm provenance panel for both versions and commit them here as `v0.1.4.png` and `v1.0.0.png` (the brief's `v0.1.0.png` / `v1.0.0.png` schema resolves to `v0.1.4.png` for the validation cut — the actual published version).

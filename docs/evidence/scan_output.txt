@@ -1,34 +1,60 @@
-n8n-nodes-shovels — @n8n/scan-community-package local results
+n8n-nodes-shovels — @n8n/scan-community-package results
 ================================================================
 
-Command:   npx @n8n/scan-community-package n8n-nodes-shovels
-Date:      __OPERATOR__
-Node version: $(node -v)
+Pipeline runs (CI = GitHub Actions, ubuntu-latest, Node 20):
+  v0.1.4 (validation cut — first successful publish):
+    https://github.com/jakemorganlabs/shovels_n8n_nodes/actions/runs/29188781186
+    Status: ✓ passed
+    Pre-publish local scan: PASS (scripts/scan_local.mjs .)
+    Post-publish registry scan: PASS (`npx @n8n/scan-community-package n8n-nodes-shovels`)
+    Provenance: signed (sigstore logIndex 2150541117)
+  v1.0.0 (stable release):
+    https://github.com/jakemorganlabs/shovels_n8n_nodes/actions/runs/29188833044
+    Status: ✓ passed
+    Pre-publish local scan: PASS
+    Post-publish registry scan: PASS
+    Provenance: signed (sigstore logIndex 2150594713)
+    Provenance predicate type: https://slsa.dev/provenance/v1
 
----- RESULTS ----
+Package registry verification:
+  $ npm view n8n-nodes-shovels@1.0.0 dist.attestations
+  {
+    url: 'https://registry.npmjs.org/-/npm/v1/attestations/n8n-nodes-shovels@1.0.0',
+    provenance: { predicateType: 'https://slsa.dev/provenance/v1' }
+  }
+  $
+  $ curl -s https://registry.npmjs.org/n8n-nodes-shovels | grep -o '"latest":"[^"]*"'
+  "latest":"1.0.0"
 
-Note: The scan by name returns 404 because the package is not yet published
-on npm. The local directory scan (via npm pack --dry-run) was used instead.
+Tarball (committed pre-publish audit):
+  12 files published: LICENSE, README.md, package.json,
+  dist/credentials/ShovelsApi.credentials.{js,d.ts,js.map,d.ts.map},
+  dist/nodes/Shovels/Shovels.node.{js,d.ts,js.map,d.ts.map},
+  dist/nodes/Shovels/shovels.svg
+  No source .ts files included.
+  No extra dependencies beyond peerDependencies.
+  package size: 9.7 kB / unpacked: 35.1 kB.
 
-npm pack --dry-run shows the tarball contains only:
-  - LICENSE
-  - README.md
-  - dist/ (built artifacts only: .js, .d.ts, .js.map, .d.ts.map, .svg)
-  - package.json
-
-No source files (.ts) are included in the published package.
-No extra dependencies beyond peerDependencies.
-Fingerprint: 12 files total, all expected.
-
-Pre-publish checks performed:
+Pre-publish checks performed (re-run on v1.0.0):
   [✓] package.json dependencies map is empty ({})
   [✓] files array contains only "dist"
   [✓] n8n block paths point at dist/ files (credentials, nodes)
   [✓] repository.url points at public GitHub URL (provenance requirement)
   [✓] license is MIT
   [✓] keywords include "n8n-community-node-package"
+  [✓] author field present with name and email (n8n/community-nodes/valid-author)
   [✓] .gitignore excludes dist/ (build artifacts not committed)
 
-Expected next step: After CI publishes v0.1.0, re-run scan by name
-from a clean environment (same Node version as CI — 20) to confirm
-identical results between local and published artifact.
+Validation-cut history (raw, for the record):
+  v0.1.0 — failed at `npm ci` (isolated-vm native build; transitive dep we don't use at runtime)
+  v0.1.1 — failed at registry scan (404; structural: cannot scan-before-first-publish)
+  v0.1.2 — failed at `npm ci` (peer conflict when scanner was a devDep; rolled back)
+  v0.1.3 — failed at `npm publish` PUT (403: token lacked bypass-2FA permission)
+  v0.1.4 — published successfully after operator regenerated token with bypass-2FA enabled
+  v1.0.0 — published successfully on the same pipeline
+
+Post-cut structural fix (committed to main):
+  `npm ci --ignore-scripts` to skip the isolated-vm native build (only types are imported)
+  Pre-publish scan via `scripts/scan_local.mjs` invokes @n8n/eslint-plugin-community-nodes
+  directly; the lint toolchain is installed via `npm install --no-save --legacy-peer-deps`
+  so it does not pollute the project lockfile.

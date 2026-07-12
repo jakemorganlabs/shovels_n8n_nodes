@@ -11,8 +11,11 @@
 | GitHub URL | `https://github.com/jakemorganlabs/shovels_n8n_nodes` |
 | npm URL | `https://www.npmjs.com/package/n8n-nodes-shovels` |
 | License | MIT |
-| Submission date | `__OPERATOR__: YYYY-MM-DD` |
+| Submission date | `__OPERATOR__: pending Creator Portal submission` |
 | Submission ID / Acknowledgment | `__OPERATOR__: fill after Creator Portal submission` |
+| First published (validation cut) | 2026-07-12 — `v0.1.4` (sigstore logIndex 2150541117) |
+| Stable release | 2026-07-12 — `v1.0.0` (sigstore logIndex 2150594713) |
+| Provenance predicate | `https://slsa.dev/provenance/v1` |
 
 ## Compliance checklist
 
@@ -39,6 +42,6 @@ All items must be confirmed before submitting to the Creator Portal.
 
 ## Status
 
-`Verification: submitted __OPERATOR__: YYYY-MM-DD — awaiting n8n review.`
+`Verification: v1.0.0 published 2026-07-12 with OIDC-signed build provenance. Creator Portal submission pending — verification in review (not granted).`
 
 > **Post-shield update:** Once the verified shield is granted, update this file and the README status line. Do not claim verified status before then.

@@ -6,7 +6,7 @@
 
 > A zero-dependency n8n community node for the [Shovels REST API](https://docs.shovels.ai) — building permits and contractors across 1,800+ U.S. jurisdictions. Published from CI with an OIDC-signed provenance attestation.
 
-**Status:** `v1.0.0` — published to [npm](https://www.npmjs.com/package/n8n-nodes-shovels). Verification submitted to the n8n Creator Portal; awaiting review.
+**Status:** `v1.0.0` — published to [npm](https://www.npmjs.com/package/n8n-nodes-shovels) with OIDC-signed build provenance. Verification submission to the n8n Creator Portal is **pending** (operator step). Pre-shield, the claim is "published with OIDC-signed build provenance; verification in review" — never "verified."
 
 ---
 
@@ -126,7 +126,7 @@ This package is published to npm by a named GitHub Actions workflow from a tagge
 - **CI pipeline:** See [`.github/workflows/publish.yml`](.github/workflows/publish.yml).
 - **Provenance evidence:** Screenshots committed in [`docs/provenance/`](docs/provenance/).
 
-**Verification status:** Submitted `__OPERATOR__: YYYY-MM-DD` — awaiting n8n review. Once the verified shield is granted, this line will be updated.
+**Verification status:** Published v1.0.0 on 2026-07-12 with OIDC-signed build provenance (sigstore transparency log: [logIndex 2150594713](https://search.sigstore.dev/?logIndex=2150594713)). Creator Portal submission **pending** — verification in review (not granted). Once the verified shield is granted, this line will be updated.
 
 ---
 
