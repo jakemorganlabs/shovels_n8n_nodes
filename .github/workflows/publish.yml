@@ -24,12 +24,16 @@ jobs:
       # scan (`npx @n8n/scan-community-package <name>`) cannot run before a
       # package's first publish, so we mirror its analysis locally and run the
       # registry scan as post-publish verification below.
+      # The lint toolchain is installed --no-save so it does not touch the
+      # project's committed lockfile (which pins n8n-workflow@^1, while the
+      # scanner's peer wants >=2 — a deliberately looser constraint).
+      - run: npm install --no-save --ignore-scripts --legacy-peer-deps @n8n/scan-community-package @n8n/eslint-plugin-community-nodes eslint @typescript-eslint/parser fast-glob
       - run: node scripts/scan_local.mjs .
       - run: npm publish --provenance --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       # Post-publish verification: re-scan the now-published registry copy.
-      # Tolerant of registry-propagation lag (warn-only) — provenance panel and
-      # `npm prove`/`npm audit signatures` are the authoritative checks.
+      # Tolerant of registry-propagation lag (warn-only) — the npm provenance
+      # panel and `npm audit signatures` are the authoritative checks.
       - run: npx @n8n/scan-community-package n8n-nodes-shovels
         continue-on-error: true
