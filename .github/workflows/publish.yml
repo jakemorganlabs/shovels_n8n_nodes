@@ -14,7 +14,10 @@ jobs:
         with:
           node-version: 20          # match the version used for local scans
           registry-url: 'https://registry.npmjs.org'
-      - run: npm ci
+      # isolated-vm (transitive via @n8n/expression-runtime) cannot build on the
+      # runner's V8 headers. We never import isolated-vm at runtime — we only use
+      # TypeScript types from n8n-workflow — so we skip native rebuild scripts.
+      - run: npm ci --ignore-scripts
       - run: npm run build
       - run: npx @n8n/scan-community-package n8n-nodes-shovels
         # scan MUST exit non-zero on findings -- this gate blocks the publish (FR-SC-4)
