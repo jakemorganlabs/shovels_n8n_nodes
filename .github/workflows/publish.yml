@@ -19,8 +19,17 @@ jobs:
       # TypeScript types from n8n-workflow — so we skip native rebuild scripts.
       - run: npm ci --ignore-scripts
       - run: npm run build
-      - run: npx @n8n/scan-community-package n8n-nodes-shovels
-        # scan MUST exit non-zero on findings -- this gate blocks the publish (FR-SC-4)
+      # Pre-publish scan gate (FR-SC-4): run @n8n/scan-community-package's
+      # analyzer against the built dist/ + package.json. The registry-based
+      # scan (`npx @n8n/scan-community-package <name>`) cannot run before a
+      # package's first publish, so we mirror its analysis locally and run the
+      # registry scan as post-publish verification below.
+      - run: node scripts/scan_local.mjs .
       - run: npm publish --provenance --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      # Post-publish verification: re-scan the now-published registry copy.
+      # Tolerant of registry-propagation lag (warn-only) — provenance panel and
+      # `npm prove`/`npm audit signatures` are the authoritative checks.
+      - run: npx @n8n/scan-community-package n8n-nodes-shovels
+        continue-on-error: true
