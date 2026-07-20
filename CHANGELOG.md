@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.1] - 2026-07-20
+
+### Changed
+- Rewrote README and supporting docs for clarity.
+- Synced in-body version references to 1.0.1.
+
+### Notes
+- No functional/runtime changes. Node behavior, operations, and zero-dependency
+  posture are unchanged from 1.0.0.
+
 ## [Unreleased]: validation cuts
 
 These cuts were the published-by-CI validation ladder for the new package. They
