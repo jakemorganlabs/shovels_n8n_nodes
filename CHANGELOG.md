@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.0.3] - 2026-07-21
+## [1.0.3] - 2026-07-20
 
 ### Changed
 - README status and version badge refresh; badge now reads the live npm version
@@ -33,14 +33,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - No functional/runtime changes. Node behavior, operations, and zero-dependency
   posture are unchanged from 1.0.0.
 
-## [Unreleased]: validation cuts
+## Validation cuts (0.1.x)
 
-These cuts were the published-by-CI validation ladder for the new package. They
-exist on npm and on the public release history; they are not stable releases.
+These cuts were the published-by-CI validation ladder for the new package. The
+ladder is visible in the GitHub release history; only 0.1.4 reached npm. None
+are stable releases.
 
 ### 0.1.4 / 2026-07-12
 - Published via `publish.yml` from tagged release `v0.1.4`.
-- First cut to publish end-to-end with OIDC-signed provenance (sigstore logIndex 2150541117).
+- First cut to publish end-to-end with OIDC-signed provenance (sigstore logIndex 2150571250).
 - Structural fix from cut-4 installed: lint toolchain `--no-save`, `npm ci --ignore-scripts`, `scripts/scan_local.mjs` invokes `@n8n/eslint-plugin-community-nodes` directly.
 
 ### 0.1.0 to 0.1.3 / 2026-07-12

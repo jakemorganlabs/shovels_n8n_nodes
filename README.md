@@ -98,7 +98,7 @@ Published by a named GitHub Actions workflow from a tagged commit, with an OIDC-
 - CI pipeline: [`.github/workflows/publish.yml`](.github/workflows/publish.yml).
 - Provenance screenshots: [`docs/provenance/`](docs/provenance/).
 
-**Verification status:** Published v1.0.0 on 2026-07-12 with OIDC-signed build provenance (sigstore transparency log: [logIndex 2150594713](https://search.sigstore.dev/?logIndex=2150594713)). Creator Portal submission **pending**. Verification in review, not granted. Once the shield is granted this line updates.
+**Verification status:** Current release v1.0.3, published 2026-07-20 with OIDC-signed build provenance (sigstore transparency log: [logIndex 2208747473](https://search.sigstore.dev/?logIndex=2208747473)). First stable release v1.0.0 published 2026-07-12 ([logIndex 2150594713](https://search.sigstore.dev/?logIndex=2150594713)). Full per-version ledger in [`docs/provenance/`](docs/provenance/). Creator Portal submission **pending**. Verification in review, not granted. Once the shield is granted this line updates.
 
 ## Run it
 
@@ -139,7 +139,7 @@ The node appears in the nodes panel under the Shovels icon. For production opera
 ├── .github/workflows/
 │   └── publish.yml                     # CI pipeline: build -> scan -> publish with provenance
 ├── package.json                        # Zero dependencies, n8n block, MIT
-├── CHANGELOG.md                        # v1.0.0 release notes
+├── CHANGELOG.md                        # release history
 ├── LICENSE                             # MIT
 └── README.md                           # This file
 ```
