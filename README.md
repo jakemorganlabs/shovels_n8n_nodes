@@ -6,7 +6,7 @@
 
 > A zero-dependency n8n community node for the [Shovels REST API](https://docs.shovels.ai). Building permits and contractors across 1,800+ U.S. jurisdictions. Published from CI with an OIDC-signed provenance attestation.
 
-**Status:** `v1.0.1` on [npm](https://www.npmjs.com/package/n8n-nodes-shovels) with OIDC-signed build provenance. Creator Portal verification is **pending** (operator step). Pre-shield the claim is "published with OIDC-signed build provenance; verification in review." Never claim verified until the shield is granted.
+**Status:** `v1.0.2` on [npm](https://www.npmjs.com/package/n8n-nodes-shovels) with OIDC-signed build provenance. Creator Portal verification is **pending** (operator step). Pre-shield the claim is "published with OIDC-signed build provenance; verification in review." Never claim verified until the shield is granted.
 
 ## What it does
 
