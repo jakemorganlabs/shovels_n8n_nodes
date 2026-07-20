@@ -1,6 +1,6 @@
-# Evidence Directory — n8n-nodes-shovels
+# Evidence Directory: n8n-nodes-shovels
 
-This directory contains the proof artifacts that back every claim in the README and the verification submission.
+Proof artifacts that back every claim in the README and the verification submission.
 
 ## Index of committed evidence
 

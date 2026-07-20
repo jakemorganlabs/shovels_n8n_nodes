@@ -1,6 +1,6 @@
 # Contributing to Shovels for n8n
 
-Thank you for your interest. This document covers how to develop, test, and release the node.
+How to develop, test, and release the node.
 
 ## Development setup
 
@@ -37,11 +37,11 @@ A valid Shovels API key is required for live testing.
 1. Add a **Shovels API** credential in n8n.
 2. Create a workflow with the Shovels node.
 3. Test each operation:
-   - **Address · Resolve** — verify address-to-geo_id lookup.
-   - **Permit / Contractor · Search** — verify geo_id + date + optional filters.
-   - **Permit / Contractor · Get** — verify retrieval by ID.
-   - **Pagination** — test Return All vs Limit.
-   - **Error cases** — test with a bad key (401), a no-match geo_id (empty), and continue-on-fail with a bad ID in a batch.
+   - **Address: Resolve** / verify address-to-geo_id lookup.
+   - **Permit / Contractor: Search** / verify geo_id + date + optional filters.
+   - **Permit / Contractor: Get** / verify retrieval by ID.
+   - **Pagination** / test Return All vs Limit.
+   - **Error cases** / test with a bad key (401), a no-match geo_id (empty), and continue-on-fail with a bad ID in a batch.
 
 ## Running the scan gate
 
@@ -55,7 +55,7 @@ All warnings must be resolved before the package is considered releasable.
 
 ## Release process
 
-Releases are **CI-only**. Do not publish from your local machine.
+Releases are **CI-only**. Do not publish from a local machine.
 
 1. Ensure the scan passes locally.
 2. Update `CHANGELOG.md` with the new version entry.
