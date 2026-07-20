@@ -1,12 +1,12 @@
 # n8n-nodes-shovels
 
 [![CI](https://github.com/jakemorganlabs/shovels_n8n_nodes/actions/workflows/publish.yml/badge.svg)](https://github.com/jakemorganlabs/shovels_n8n_nodes/actions/workflows/publish.yml)
-[![npm version](https://badge.fury.io/js/n8n-nodes-shovels.svg)](https://www.npmjs.com/package/n8n-nodes-shovels)
+[![npm version](https://img.shields.io/npm/v/n8n-nodes-shovels?label=npm%20package&color=brightgreen)](https://www.npmjs.com/package/n8n-nodes-shovels)
 [![provenance](https://img.shields.io/badge/provenance-OIDC%20signed-blue)](https://www.npmjs.com/package/n8n-nodes-shovels)
 
 > A zero-dependency n8n community node for the [Shovels REST API](https://docs.shovels.ai). Building permits and contractors across 1,800+ U.S. jurisdictions. Published from CI with an OIDC-signed provenance attestation.
 
-**Status:** `v1.0.2` on [npm](https://www.npmjs.com/package/n8n-nodes-shovels) with OIDC-signed build provenance. Creator Portal verification is **pending**
+**Status:** `v1.0.3` on [npm](https://www.npmjs.com/package/n8n-nodes-shovels) with OIDC-signed build provenance. Creator Portal verification is **pending**
 
 ## What it does
 
