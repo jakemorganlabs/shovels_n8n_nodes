@@ -148,7 +148,7 @@ The node appears in the nodes panel under the Shovels icon. For production opera
 
 | Document | Covers | Link |
 |----------|-------|------|
-| **SRS/TDD** | Baselined requirements, acceptance criteria, trace matrix | [View raw](docs/shovels_node_srs_tdd.html) (hosted render: `__OPERATOR__`) |
+| **SRS/TDD** | Baselined requirements, acceptance criteria, trace matrix | [View raw](docs/shovels_node_srs_tdd.html) |
 | **Runbook** | Build, publish, rollback, closeout protocol | [`docs/runbook.md`](docs/runbook.md) |
 | **Worked example** | Step-by-step address-to-permits walkthrough | [`docs/worked-example.md`](docs/worked-example.md) |
 | **Verification** | Creator Portal submission, compliance checklist | [`docs/verification.md`](docs/verification.md) |
@@ -166,7 +166,7 @@ FIELD-005 reuses this piece's discipline: available to the capstone as an option
 
 MIT (c) Jake Morgan. See [`LICENSE`](LICENSE).
 
-Author: Jake Morgan / `jakemorganlabs` portfolio (`__OPERATOR__: URL`)
-LinkedIn: `__OPERATOR__: URL` / Contact: `__OPERATOR__: email`
+Author: Jake Morgan. Portfolio at [jakemorganlabs.dev](https://jakemorganlabs.dev).
+[LinkedIn](https://www.linkedin.com/in/jakemorganlabs) / jakemorganlabs@gmail.com
 
 > The integration is configuration; the release is a proof.
