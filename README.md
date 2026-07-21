@@ -6,7 +6,7 @@
 
 > A zero-dependency n8n community node for the [Shovels REST API](https://docs.shovels.ai). Building permits and contractors across 1,800+ U.S. jurisdictions. Published from CI with an OIDC-signed provenance attestation.
 
-**Status:** `v1.0.3` on [npm](https://www.npmjs.com/package/n8n-nodes-shovels) with OIDC-signed build provenance. Creator Portal verification is **pending**
+**Status:** `v1.0.4` on [npm](https://www.npmjs.com/package/n8n-nodes-shovels) with OIDC-signed build provenance. Creator Portal verification is **pending**
 
 ## What it does
 
@@ -98,7 +98,7 @@ Published by a named GitHub Actions workflow from a tagged commit, with an OIDC-
 - CI pipeline: [`.github/workflows/publish.yml`](.github/workflows/publish.yml).
 - Provenance screenshots: [`docs/provenance/`](docs/provenance/).
 
-**Verification status:** Current release v1.0.3, published 2026-07-20 with OIDC-signed build provenance (sigstore transparency log: [logIndex 2208747473](https://search.sigstore.dev/?logIndex=2208747473)). First stable release v1.0.0 published 2026-07-12 ([logIndex 2150594713](https://search.sigstore.dev/?logIndex=2150594713)). Full per-version ledger in [`docs/provenance/`](docs/provenance/). Creator Portal submission **pending**. Verification in review, not granted. Once the shield is granted this line updates.
+**Verification status:** Every release is published from CI with an OIDC-signed provenance attestation; the per-version transparency-log ledger lives in [`docs/provenance/`](docs/provenance/). First stable release v1.0.0 published 2026-07-12 ([logIndex 2150594713](https://search.sigstore.dev/?logIndex=2150594713)). Creator Portal submission **pending**. Verification in review, not granted. Once the shield is granted this line updates.
 
 ## Run it
 
@@ -166,7 +166,6 @@ FIELD-005 reuses this piece's discipline: available to the capstone as an option
 
 MIT (c) Jake Morgan. See [`LICENSE`](LICENSE).
 
-Author: Jake Morgan. Portfolio at [jakemorganlabs.dev](https://jakemorganlabs.dev).
-[LinkedIn](https://www.linkedin.com/in/jakemorganlabs) / jakemorganlabs@gmail.com
+**Jake Morgan** · [jakemorganlabs.dev](https://jakemorganlabs.dev) · [LinkedIn](https://www.linkedin.com/in/jakemorganlabs) · [jakemorganlabs@gmail.com](mailto:jakemorganlabs@gmail.com)
 
 > The integration is configuration; the release is a proof.
