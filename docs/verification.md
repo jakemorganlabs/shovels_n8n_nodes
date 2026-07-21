@@ -15,7 +15,7 @@
 | Submission ID / Acknowledgment | `__OPERATOR__: fill after Creator Portal submission` |
 | First published (validation cut) | 2026-07-12 / `v0.1.4` (sigstore logIndex 2150571250) |
 | First stable release | 2026-07-12 / `v1.0.0` (sigstore logIndex 2150594713) |
-| Current release | 2026-07-20 / `v1.0.3` (sigstore logIndex 2208747473) |
+| Current release | 2026-07-21 / `v1.0.4` (sigstore logIndex 2209410135) |
 | Provenance predicate | `https://slsa.dev/provenance/v1` |
 
 ## Compliance checklist

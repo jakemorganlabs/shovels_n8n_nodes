@@ -12,7 +12,8 @@ The provenance panel shows that the package was built by a named GitHub Actions 
 | v1.0.0  | 2026-07-12 | [run 29188833044](https://github.com/jakemorganlabs/shovels_n8n_nodes/actions/runs/29188833044) | [2150594713](https://search.sigstore.dev/?logIndex=2150594713) | Published (first stable) |
 | v1.0.1  | 2026-07-20 | [run 29738578067](https://github.com/jakemorganlabs/shovels_n8n_nodes/actions/runs/29738578067) | [2205633193](https://search.sigstore.dev/?logIndex=2205633193) | Published (docs refresh) |
 | v1.0.2  | 2026-07-20 | [run 29741918595](https://github.com/jakemorganlabs/shovels_n8n_nodes/actions/runs/29741918595) | [2206083254](https://search.sigstore.dev/?logIndex=2206083254) | Published (history re-bind) |
-| v1.0.3  | 2026-07-20 | [run 29786269998](https://github.com/jakemorganlabs/shovels_n8n_nodes/actions/runs/29786269998) | [2208747473](https://search.sigstore.dev/?logIndex=2208747473) | Published (current) |
+| v1.0.3  | 2026-07-20 | [run 29786269998](https://github.com/jakemorganlabs/shovels_n8n_nodes/actions/runs/29786269998) | [2208747473](https://search.sigstore.dev/?logIndex=2208747473) | Published |
+| v1.0.4  | 2026-07-21 | [run 29791823718](https://github.com/jakemorganlabs/shovels_n8n_nodes/actions/runs/29791823718) | [2209410135](https://search.sigstore.dev/?logIndex=2209410135) | Published (current) |
 
 logIndex values are the SLSA-provenance entries read directly from each version's
 registry attestation bundle, not transcribed from the UI.
