@@ -1,5 +1,6 @@
 // Pure routing config for the Shovels REST API. No imperative HTTP, no runtime deps.
 // Not implemented (deferred): polling triggers (v1.1), batching, webhooks, custom transport.
+import { NodeConnectionTypes } from 'n8n-workflow';
 import type {
 	INodeType,
 	INodeTypeDescription,
@@ -45,11 +46,12 @@ export class Shovels implements INodeType {
 		version: 1,
 		subtitle: '={{ $parameter["operation"] + ": " + $parameter["resource"] }}',
 		description: 'Query building permits and contractors from the Shovels API',
+		usableAsTool: true,
 		defaults: {
 			name: 'Shovels',
 		},
-		inputs: ['main'],
-		outputs: ['main'],
+		inputs: [NodeConnectionTypes.Main],
+		outputs: [NodeConnectionTypes.Main],
 		credentials: [
 			{
 				name: 'shovelsApi',
@@ -165,7 +167,7 @@ export class Shovels implements INodeType {
 					{
 						name: 'Resolve',
 						value: 'resolve',
-						action: 'Resolve address to geo_id',
+						action: 'Resolve an address',
 						routing: {
 							request: {
 								method: 'GET',
@@ -280,7 +282,7 @@ export class Shovels implements INodeType {
 						displayName: 'Property Type',
 						name: 'propertyType',
 						type: 'options',
-						default: '',
+						default: 'residential',
 						options: [
 							{ name: 'Residential', value: 'residential' },
 							{ name: 'Commercial', value: 'commercial' },
