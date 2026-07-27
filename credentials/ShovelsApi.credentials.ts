@@ -11,6 +11,7 @@ export class ShovelsApi implements ICredentialType {
 	name = 'shovelsApi';
 	displayName = 'Shovels API';
 	documentationUrl = 'https://docs.shovels.ai';
+	icon = 'file:../nodes/Shovels/shovels.svg' as const;
 
 	properties: INodeProperties[] = [
 		{
