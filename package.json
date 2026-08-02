@@ -1,6 +1,6 @@
 {
   "name": "n8n-nodes-shovels",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "n8n community node for the Shovels REST API. Building permits and contractors across 1,800+ U.S. jurisdictions.",
   "license": "MIT",
   "author": {
@@ -11,6 +11,7 @@
     "type": "git",
     "url": "git+https://github.com/jakemorganlabs/shovels_n8n_nodes.git"
   },
+  "homepage": "https://github.com/jakemorganlabs/shovels_n8n_nodes#readme",
   "keywords": [
     "n8n-community-node-package",
     "n8n",
