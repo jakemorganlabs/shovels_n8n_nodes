@@ -7,13 +7,17 @@
 
 > A zero-dependency n8n community node for the [Shovels REST API](https://docs.shovels.ai). Building permits and contractors across 1,800+ U.S. jurisdictions. Published from CI with an OIDC-signed provenance attestation.
 
-**Status:** `v1.0.8` on [npm](https://www.npmjs.com/package/n8n-nodes-shovels) with OIDC-signed build provenance. n8n Creator Portal Verified
+**Status:** `v1.0.9` on [npm](https://www.npmjs.com/package/n8n-nodes-shovels) with OIDC-signed build provenance. **n8n Creator Portal Verified.**
 
 ## What it does
 
-Pick a resource (`Permit`, `Contractor`, `Address`), pick an operation (`Search`, `Get`, `Resolve`), set the fields. The node handles the authenticated HTTP calls, cursor pagination, and response unwrapping. No code inside the workflow.
+1. Pick a resource: `Permit`, `Contractor`, or `Address`.
+2. Pick an operation: `Search`, `Get`, or `Resolve`.
+3. Set the fields.
 
-The integration is routing configuration only: JSON + TypeScript declarations. No runtime HTTP client, no parser library, no state, no dependency beyond n8n's peer contract. Built against an SRS/TDD with acceptance criteria. Not an ad-hoc script.
+The node handles the authenticated HTTP calls, the cursor pagination, and the response unwrapping. No code lives inside the workflow.
+
+The integration is routing configuration only: JSON plus TypeScript declarations. There is no runtime HTTP client, no parser library, no state, and no dependency beyond n8n's peer contract. It is built against an SRS/TDD with acceptance criteria. It is not an ad-hoc script.
 
 ## Architecture
 
@@ -34,19 +38,19 @@ flowchart LR
     E --> F
 ```
 
-The credential authenticates every request. The router selects endpoint and method. Search operations attach generic cursor pagination that walks `next_page` until exhausted. All operations unwrap the `items` array so each API record becomes one n8n output item. Errors surface as typed n8n errors: 401 credential, 429 retryable, empty result a valid query with no matches. Zero imperative business logic.
+The credential authenticates every request. The router selects the endpoint and the method. Search operations attach generic cursor pagination that walks `next_page` until the result set is exhausted. All operations unwrap the `items` array, so each API record becomes one n8n output item. Errors surface as typed n8n errors: 401 is a credential error, 429 is retryable, and an empty result is a valid query with no matches. There is zero imperative business logic.
 
 ## Operations
 
 | Resource | Operation | Endpoint | Pagination | Notes |
-|----------|-----------|----------|------------|-------|
-| **Permit** | Search | `GET /permits/search` | Return All or Limit 1 to 500 | `geo_id` + date window required |
-| **Permit** | Get | `GET /permits/{id}` | none | Single record by Shovels ID |
-| **Contractor** | Search | `GET /contractors/search` | Return All or Limit 1 to 500 | Same shape as Permit Search |
-| **Contractor** | Get | `GET /contractors/{id}` | none | Single record by Shovels ID |
-| **Address** | Resolve | `GET /addresses/search` | none | Free-form address to `geo_id` candidates |
+|---|---|---|---|---|
+| Permit | Search | `GET /permits/search` | Return All or Limit 1–500 | `geo_id` + date window required |
+| Permit | Get | `GET /permits/{id}` | none | Single record by Shovels ID |
+| Contractor | Search | `GET /contractors/search` | Return All or Limit 1–500 | Same shape as Permit Search |
+| Contractor | Get | `GET /contractors/{id}` | none | Single record by Shovels ID |
+| Address | Resolve | `GET /addresses/search` | none | Free-form address to `geo_id` candidates |
 
-**Geo ID resolution:** state codes (`CA`) and ZIP codes (`94103`) are valid `geo_id`s directly. Cities, counties, and street addresses must go through Address: Resolve first.
+**NOTE:** State codes (`CA`) and ZIP codes (`94103`) are valid `geo_id` values directly. Cities, counties, and street addresses must go through `Address: Resolve` first.
 
 ## Install
 
@@ -56,7 +60,7 @@ From npm, in self-hosted n8n:
 npm install n8n-nodes-shovels
 ```
 
-Or via Settings -> Community Nodes in the n8n editor.
+Or use **Settings → Community Nodes** in the n8n editor. The node is verified, so it also installs in one click from the nodes panel on self-hosted and Cloud.
 
 From source:
 
@@ -70,36 +74,40 @@ npm link
 npm link n8n-nodes-shovels
 ```
 
-Create a **Shovels API** credential with your API key. Test connection hits `/permits/search?geo_id=CA&size=1`.
+Create a Shovels API credential with your API key. The connection test hits `/permits/search?geo_id=CA&size=1`.
 
-A runnable example workflow is in [`examples/permits-by-address.json`](examples/permits-by-address.json): resolve address to geo_id, search permits, paginate.
+A runnable example workflow is in `examples/permits-by-address.json`: resolve an address to a `geo_id`, search permits, paginate.
+
+**NOTE:** Run local n8n on Node 22 (`npx n8n`). n8n rejects Node 24. Pin the Node version before you test.
 
 ## Zero runtime dependencies
 
-`package.json#dependencies` is empty. The node leans on n8n's peer-provided `INodeTypeDescription` and internal HTTP transport. For a community node every dependency is a supply-chain surface. Fewer deps means smaller audit surface, faster install, no transitive exposure.
+`package.json#dependencies` is empty. The node leans on n8n's peer-provided `INodeTypeDescription` and internal HTTP transport. For a community node, every dependency is a supply-chain surface. Fewer dependencies mean a smaller audit surface, a faster install, and no transitive exposure.
 
 ## Security posture
 
 | Guarantee | How it is enforced |
-|-----------|-----------------|
+|---|---|
 | Zero runtime dependencies | `dependencies: {}` in `package.json`; verified by `@n8n/scan-community-package` |
 | No filesystem access | Source contains no `fs`, `path`, or `require('fs')` |
 | No environment access | Source contains no `process.env` reads |
-| Publish only via CI | `.github/workflows/publish.yml`; local `npm publish` never used for verification-bound versions |
-| OIDC-signed provenance | `id-token: write` + `--provenance`; npm attestation links to repo + commit + workflow |
-| Scan gate blocks publish | CI runs `@n8n/scan-community-package` before publish; non-zero exit stops the release |
-| No secrets in repo | `scripts/secret_gate.sh` blocks commits containing `_authToken` or npm tokens |
-| Credential isolation | API key stays in n8n's encrypted credential store; never in source, logs, or output |
+| Publish only via CI | `.github/workflows/publish.yml`; local `npm publish` is never used for verification-bound versions |
+| OIDC-signed provenance | `id-token: write` + `--provenance`; the npm attestation links to repo, commit, and workflow |
+| Scan gate blocks publish | CI runs `@n8n/scan-community-package` before publish; a non-zero exit stops the release |
+| No secrets in repo | `scripts/secret_gate.sh` blocks commits that contain `_authToken` or npm tokens |
+| Credential isolation | The API key stays in n8n's encrypted credential store; never in source, logs, or output |
 
 ## Provenance and verification
 
-Published by a named GitHub Actions workflow from a tagged commit, with an OIDC-signed provenance attestation. Anyone can verify that the tarball on npm was built by this workflow, from this repo, at this commit. Trust is a property of the pipeline, not of the author.
+Every release is published by a named GitHub Actions workflow from a Release event, with an OIDC-signed provenance attestation. Anyone can verify that the tarball on npm was built by this workflow, from this repo, at this commit. Trust is a property of the pipeline, not of the author.
 
-- npm provenance panel: see the [package page](https://www.npmjs.com/package/n8n-nodes-shovels).
-- CI pipeline: [`.github/workflows/publish.yml`](.github/workflows/publish.yml).
-- Provenance screenshots: [`docs/provenance/`](docs/provenance/).
+- npm provenance panel: see the package page.
+- CI pipeline: `.github/workflows/publish.yml`.
+- Provenance screenshots and the per-version transparency-log ledger: `docs/provenance/`.
 
-**Verification status:** Every release is published from CI with an OIDC-signed provenance attestation; the per-version transparency-log ledger lives in [`docs/provenance/`](docs/provenance/). First stable release v1.0.0 published 2026-07-12 ([logIndex 2150594713](https://search.sigstore.dev/?logIndex=2150594713)). Creator Portal submission **pending**. Verification in review, not granted. Once the shield is granted this line updates.
+**Verification status:** Granted. The n8n Creator Portal reviewed the package and verified it in August 2026. The first stable release, v1.0.0, published 2026-07-12 (logIndex 2150594713). The current release is v1.0.9.
+
+**NOTE:** The publish workflow fires on the GitHub **Release published** event. A push or a bare tag does not publish. npm rejects a republish of an existing version number; a 403 on publish means the version already landed, so bump the patch version instead of a retry.
 
 ## Run it
 
@@ -112,7 +120,7 @@ npm link n8n-nodes-shovels
 # Restart n8n
 ```
 
-The node appears in the nodes panel under the Shovels icon. For production operation, credential setup, and troubleshooting, see [`docs/runbook.md`](docs/runbook.md).
+The node appears in the nodes panel under the Shovels brand icon. For production operation, credential setup, and troubleshooting, see `docs/runbook.md`.
 
 ## Repo map
 
@@ -123,50 +131,45 @@ The node appears in the nodes panel under the Shovels icon. For production opera
 ├── nodes/
 │   └── Shovels/
 │       ├── Shovels.node.ts            # Declarative routing: resources, operations, fields
-│       └── shovels.svg                # Node icon (MIT-licensed from Heroicons)
+│       └── shovels.svg                # Node icon (SVG)
 ├── dist/                              # Build output (not committed; generated by tsc)
 ├── docs/
-│   ├── shovels_node_srs_tdd.html      # SRS/TDD: baselined spec this build implements
+│   ├── SRS-TDD.md                     # Controlled document, Rev 1.1 as built
 │   ├── runbook.md                     # Operator manual: build, publish, rollback, closeout
 │   ├── verification.md                # Creator Portal submission + compliance checklist
 │   ├── worked-example.md              # Step-by-step walkthrough with field values
-│   ├── evidence/                       # Scan output + provenance screenshots + index
-│   ├── provenance/                     # npm provenance panel screenshots (closeout)
-│   └── img/                            # README hero screenshots (operator capture)
+│   ├── evidence/                      # Scan output + provenance screenshots + index
+│   ├── provenance/                    # npm provenance panel screenshots
+│   └── img/                           # README hero screenshots
 ├── examples/
 │   └── permits-by-address.json        # Importable workflow: resolve -> search -> paginate
 ├── scripts/
 │   └── secret_gate.sh                 # Pre-commit secret scanner
 ├── .github/workflows/
-│   └── publish.yml                     # CI pipeline: build -> scan -> publish with provenance
-├── package.json                        # Zero dependencies, n8n block, MIT
-├── CHANGELOG.md                        # release history
-├── LICENSE                             # MIT
-└── README.md                           # This file
+│   └── publish.yml                    # CI pipeline: build -> scan -> publish with provenance
+├── package.json                       # Zero dependencies, n8n block, MIT
+├── CHANGELOG.md                       # Release history
+├── LICENSE                            # MIT
+└── README.md                          # This file
 ```
 
 ## Docs index
 
 | Document | Covers | Link |
-|----------|-------|------|
-| **SRS/TDD** | Baselined requirements, acceptance criteria, trace matrix | [View raw](docs/shovels_node_srs_tdd.html) |
-| **Runbook** | Build, publish, rollback, closeout protocol | [`docs/runbook.md`](docs/runbook.md) |
-| **Worked example** | Step-by-step address-to-permits walkthrough | [`docs/worked-example.md`](docs/worked-example.md) |
-| **Verification** | Creator Portal submission, compliance checklist | [`docs/verification.md`](docs/verification.md) |
-| **Evidence** | Scan output, provenance screenshots, review log | [`docs/evidence/`](docs/evidence/) |
-| **Changelog** | Release history and known limitations | [`CHANGELOG.md`](CHANGELOG.md) |
+|---|---|---|
+| SRS/TDD | Rev 1.1 as built: requirements, acceptance criteria, and the change record vs the 1.0 baseline | [docs/SRS-TDD.md](docs/SRS-TDD.md) |
+| Runbook | Build, publish, rollback, closeout protocol | [docs/runbook.md](docs/runbook.md) |
+| Worked example | Step-by-step address-to-permits walkthrough | [docs/worked-example.md](docs/worked-example.md) |
+| Verification | Creator Portal submission, compliance checklist | [docs/verification.md](docs/verification.md) |
+| Evidence | Scan output, provenance screenshots, review log | [docs/evidence/](docs/evidence/) |
+| Changelog | Release history and known limitations | [CHANGELOG.md](CHANGELOG.md) |
 
 ## Portfolio cross-link
 
-> Part of a five-piece portfolio. This is Piece III: supply-chain discipline. Zero runtime dependencies, published only by CI with OIDC-signed provenance.
-> Piece I `intake-n-outbound.pipeline` / Piece II `document-intelligence-rag` / Piece IV `recon_multiagent` / Capstone `fieldops`
+Part of a five-piece portfolio. This is Piece III: supply-chain discipline. Zero runtime dependencies, published only by CI with OIDC-signed provenance. Piece I `intake-n-outbound.pipeline` / Piece II `document-intelligence-rag` / Piece IV `recon_multiagent` / Capstone `fieldops`.
 
-FIELD-005 reuses this piece's discipline: available to the capstone as an optional enrichment tool, and its CI provenance pattern is reused by Piece IV's release pipeline.
+FIELD-005 reuses this piece's discipline: the node is available to the capstone as an optional enrichment tool, and Piece IV's release pipeline reuses its CI provenance pattern.
 
 ## License
 
-MIT (c) Jake Morgan. See [`LICENSE`](LICENSE).
-
-**Jake Morgan** · [jakemorganlabs.dev](https://jakemorganlabs.dev) · [LinkedIn](https://www.linkedin.com/in/jakemorganlabs) · [jakemorganlabs@gmail.com](mailto:jakemorganlabs@gmail.com)
-
-> The integration is configuration; the release is a proof.
+MIT © Jake Morgan. See LICENSE.
